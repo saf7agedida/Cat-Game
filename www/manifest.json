@@ -1,0 +1,9 @@
+{
+  "name": "Meowdoku - سودوكو القطط والبطل",
+  "short_name": "Meowdoku",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#fdf6f0",
+  "theme_color": "#ff8b94",
+  "orientation": "portrait"
+}

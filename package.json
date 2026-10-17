@@ -1,0 +1,13 @@
+{
+  "name": "meowdoku-custom-apk",
+  "version": "2.0.0",
+  "description": "Meowdoku 50 Levels with Custom Son Photo & Multi-Audio Settings",
+  "scripts": {
+    "build": "echo 'Web assets ready in www/'"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/cli": "^6.0.0",
+    "@capacitor/core": "^6.0.0"
+  }
+}

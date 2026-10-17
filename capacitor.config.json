@@ -1,0 +1,6 @@
+{
+  "appId": "com.custom.meowdoku",
+  "appName": "Meowdoku",
+  "webDir": "www",
+  "bundledWebRuntime": false
+}

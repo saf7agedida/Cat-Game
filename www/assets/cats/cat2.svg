@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+    <circle cx="60" cy="60" r="56" fill="#BBDEFB" stroke="#1E88E5" stroke-width="5"/>
+    <!-- Cat Ears -->
+    <polygon points="25,45 18,15 48,30" fill="#90A4AE" stroke="#333" stroke-width="3" stroke-linejoin="round"/>
+    <polygon points="95,45 102,15 72,30" fill="#90A4AE" stroke="#333" stroke-width="3" stroke-linejoin="round"/>
+    <!-- Cat Head -->
+    <circle cx="60" cy="65" r="36" fill="#90A4AE" stroke="#333" stroke-width="3"/>
+    <!-- Eyes -->
+    <circle cx="46" cy="58" r="5" fill="#222"/>
+    <circle cx="74" cy="58" r="5" fill="#222"/>
+    <circle cx="44" cy="56" r="2" fill="#fff"/>
+    <circle cx="72" cy="56" r="2" fill="#fff"/>
+    <!-- Nose & Mouth -->
+    <polygon points="56,67 64,67 60,72" fill="#ff6b81"/>
+    <path d="M 50 76 Q 60 84 60 72 Q 60 84 70 76" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- Whiskers -->
+    <line x1="18" y1="64" x2="36" y2="67" stroke="#333" stroke-width="2"/>
+    <line x1="18" y1="74" x2="36" y2="73" stroke="#333" stroke-width="2"/>
+    <line x1="102" y1="64" x2="84" y2="67" stroke="#333" stroke-width="2"/>
+    <line x1="102" y1="74" x2="84" y2="73" stroke="#333" stroke-width="2"/>
+    <!-- Distinct Badge -->
+    <text x="88" y="34" font-size="24" text-anchor="middle">🕶️</text>
+  </svg>
