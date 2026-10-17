@@ -3,150 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#ff8b94">
-    <title>Meowdoku - سودوكو القطط والبطل</title>
+    <meta name="theme-color" content="#fcf7f2">
+    <title>Meowdoku - مناطق الألوان</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="app-container">
-        <!-- Header -->
-        <header>
-            <div class="logo">
-                <span id="header-icon" class="logo-icon">🐾</span>
-                <h1 id="game-title">Meowdoku</h1>
+        <!-- Top Bar (Exact Match to Screenshot) -->
+        <header class="top-bar">
+            <button id="back-btn" class="circle-icon-btn" title="المستويات">➜</button>
+            <div class="top-stats">
+                <div class="stat-col">
+                    <span class="stat-label">Level</span>
+                    <span id="level-num-display" class="stat-val">1</span>
+                </div>
+                <div class="stat-col">
+                    <span class="stat-label">Score</span>
+                    <span id="score-display" class="stat-val">0</span>
+                </div>
             </div>
-            <div class="header-controls">
-                <button id="settings-btn" class="icon-btn" title="الإعدادات وتخصيص الصور والأصوات">⚙️</button>
-                <button id="sound-btn" class="icon-btn" title="كتم/تشغيل الصوت">🔊</button>
-                <button id="menu-btn" class="icon-btn" title="خريطة المستويات" style="display: none;">🗺️</button>
-            </div>
+            <button id="settings-btn" class="circle-icon-btn" title="الإعدادات">⚙️</button>
         </header>
 
         <!-- Level Selection Screen -->
-        <main id="level-screen" class="screen active">
-            <div class="welcome-card">
-                <h2>اختر المستوى 🌟</h2>
-                <p>رتب الأشكال بحيث لا تتكرر في أي صف، عمود، أو صندوق فرعي! يمكنك من زر ⚙️ بالأعلى وضع صورة ابنك وأصواتك الخاصة.</p>
-                <div class="progress-summary">
-                    المستويات المكتملة: <span id="completed-count">0</span> / 50 ⭐
+        <main id="level-screen" class="screen">
+            <div class="levels-header-card">
+                <h2>🐾 خريطة المستويات (1 - 120)</h2>
+                <p>ضع قطة واحدة (أو صورة ابنك) في كل منطقة لونية، وفي كل صف وعمود، بشرط ألا تتلامس القطط حتى قطرياً!</p>
+                <div class="mode-Quick-bar">
+                    <span>اضغط <strong>⚙️</strong> بالأعلى لإضافة صورة ابنك وأصواتك الخاصة!</span>
                 </div>
             </div>
-
-            <div class="difficulty-tabs">
-                <span class="badge easy">1-15: مبتدئ (4×4)</span>
-                <span class="badge medium">16-35: متوسط (6×6)</span>
-                <span class="badge hard">36-50: خبير (9×9)</span>
-            </div>
-
             <div id="levels-grid" class="levels-grid"></div>
         </main>
 
-        <!-- Game Screen -->
-        <main id="game-screen" class="screen">
-            <div class="game-info">
-                <div class="info-box">
-                    <span class="label">المستوى</span>
-                    <span id="current-level-display" class="value">1</span>
-                </div>
-                <div class="info-box">
-                    <span class="label">الأخطاء</span>
-                    <span id="mistakes-display" class="value">0</span>
-                </div>
-                <div class="info-box">
-                    <span class="label">الوقت</span>
-                    <span id="timer-display" class="value">00:00</span>
+        <!-- Game Screen (Exact Match to Screenshot) -->
+        <main id="game-screen" class="screen active">
+            <!-- Cat Silhouettes Bar + 3 Golden Fishes -->
+            <div class="status-strip">
+                <div id="cat-silhouettes-bar" class="silhouettes-pill"></div>
+                <div id="lives-bar" class="lives-pill">
+                    <span class="fish-icon">🐟</span>
+                    <span class="fish-icon">🐟</span>
+                    <span class="fish-icon">🐟</span>
                 </div>
             </div>
 
-            <div id="board-container" class="board-container">
-                <div id="sudoku-board" class="sudoku-board"></div>
+            <!-- 3 Visual Rules Cards (Exact Match to Screenshot) -->
+            <div class="rules-strip" dir="ltr">
+                <div class="rule-card">
+                    <div class="mini-grid">
+                        <span>✕</span><span>✕</span><span>✕</span>
+                        <span>✕</span><span class="mini-cat">🐱</span><span></span>
+                        <span>✕</span><span></span><span></span>
+                    </div>
+                    <div class="rule-text">1 Cat per<br>color</div>
+                </div>
+                <div class="rule-card">
+                    <div class="mini-grid">
+                        <span>✕</span><span class="mini-cat">🐱</span><span>✕</span>
+                        <span></span><span>✕</span><span></span>
+                        <span></span><span>✕</span><span></span>
+                    </div>
+                    <div class="rule-text">1 Cat per<br>column and<br>row</div>
+                </div>
+                <div class="rule-card">
+                    <div class="mini-grid">
+                        <span>✕</span><span>✕</span><span>✕</span>
+                        <span>✕</span><span class="mini-cat">🐱</span><span>✕</span>
+                        <span>✕</span><span>✕</span><span>✕</span>
+                    </div>
+                    <div class="rule-text">Cats cannot<br>touch</div>
+                </div>
             </div>
 
-            <!-- Palette / Controls -->
-            <div class="controls-area">
-                <div id="item-palette" class="item-palette"></div>
-                <div class="action-buttons">
-                    <button id="erase-btn" class="action-btn">🧹 مسح</button>
-                    <button id="hint-btn" class="action-btn">💡 تلميح (<span id="hints-left">3</span>)</button>
-                    <button id="restart-btn" class="action-btn">🔄 إعادة</button>
-                </div>
+            <!-- Color Regions Board -->
+            <div class="board-card">
+                <div id="regions-board" class="regions-board" dir="ltr"></div>
+            </div>
+
+            <!-- Tap instruction hint -->
+            <div class="tap-guide">
+                ضغطة 1 = علامة <strong>✕</strong> &nbsp;|&nbsp; ضغطة 2 = <strong>وضع القطة / الصورة</strong> &nbsp;|&nbsp; ضغطة 3 = مسح
+            </div>
+
+            <!-- 3 Bottom Boosters (Cat, Lightbulb, Mouse) -->
+            <div class="boosters-bar" dir="ltr">
+                <button id="booster-cat" class="booster-btn" title="كشف قطة صحيحة">
+                    <img id="booster-cat-img" src="assets/cats/main_cat.svg" alt="Cat" class="booster-img">
+                    <span id="badge-cat" class="booster-badge">7</span>
+                </button>
+                <button id="booster-hint" class="booster-btn" title="تلميح ذكي">
+                    <span class="booster-emoji">💡</span>
+                    <span id="badge-hint" class="booster-badge">9</span>
+                </button>
+                <button id="booster-mouse" class="booster-btn" title="الفأر المساعد: استبعاد مربعات خاطئة">
+                    <span class="booster-emoji">🐭</span>
+                    <span id="badge-mouse" class="booster-badge">2</span>
+                </button>
             </div>
         </main>
 
-        <!-- Settings Modal (Photos + Up to 6 Correct & 6 Wrong Sounds) -->
+        <!-- Settings Modal (Son's Photo + 6 Correct & 6 Wrong Sounds) -->
         <div id="settings-modal" class="modal">
-            <div class="modal-content settings-modal-box">
+            <div class="modal-content settings-box">
                 <div class="modal-header">
                     <h2>⚙️ إعدادات اللعبة والتخصيص</h2>
-                    <button id="close-settings-top" class="close-x">✖</button>
+                    <button id="close-settings-btn" class="close-x">✖</button>
                 </div>
 
                 <div class="settings-tabs">
-                    <button class="tab-btn active" data-tab="tab-images">🖼️ الصور (القطة / ابني)</button>
-                    <button class="tab-btn" data-tab="tab-correct-audio">✅ أصوات الصح (6)</button>
-                    <button class="tab-btn" data-tab="tab-wrong-audio">❌ أصوات الخطأ (6)</button>
+                    <button class="tab-btn active" data-tab="tab-photo">🖼️ صورة ابني / القطة</button>
+                    <button class="tab-btn" data-tab="tab-correct">✅ أصوات الصح (6)</button>
+                    <button class="tab-btn" data-tab="tab-wrong">❌ أصوات الخطأ (6)</button>
                 </div>
 
-                <!-- Tab 1: Images -->
-                <div id="tab-images" class="tab-pane active">
-                    <div class="mode-selector">
-                        <label class="radio-card">
-                            <input type="radio" name="avatar-mode" value="cats" checked>
-                            <span>🐱 القطط الافتراضية</span>
+                <!-- Tab 1: Son's Photo vs Cat -->
+                <div id="tab-photo" class="tab-pane active">
+                    <div class="mode-switch">
+                        <label class="radio-option">
+                            <input type="radio" name="avatar-mode" value="cat" checked>
+                            <span>🐱 شكل القطة الافتراضي</span>
                         </label>
-                        <label class="radio-card">
+                        <label class="radio-option">
                             <input type="radio" name="avatar-mode" value="son">
                             <span>👦 صورة وجه ابني</span>
                         </label>
                     </div>
 
-                    <div class="quick-son-upload">
-                        <p><strong>✨ رفع سريع لصورة ابنك:</strong> ارفع صورة واحدة لوجه ابنك، وستقوم اللعبة تلقائياً بتمييزها بـ 9 إطارات وشارات مرحة لتناسب كل المستويات!</p>
-                        <label class="primary-upload-btn">
-                            📸 اختر صورة موحدة لابنك
-                            <input type="file" id="single-son-input" accept="image/*" style="display:none;">
+                    <div class="son-upload-card">
+                        <div class="son-preview-wrap">
+                            <img id="settings-son-preview" src="assets/cats/main_cat.svg" alt="Preview">
+                        </div>
+                        <p>ارفع صورة وجه ابنك لتظهر في المربعات الملونة بدلاً من القطة في جميع المستويات!</p>
+                        <label class="upload-main-btn">
+                            📸 اختر صورة ابنك من الجهاز
+                            <input type="file" id="son-photo-input" accept="image/*" style="display:none;">
                         </label>
                     </div>
 
-                    <details class="individual-photos-details">
-                        <summary>أو تخصيص 9 صور منفصلة لكل رقم (اختياري)</summary>
-                        <div id="custom-faces-list" class="custom-list"></div>
-                    </details>
+                    <div class="toggle-row">
+                        <label>
+                            <input type="checkbox" id="auto-x-toggle" checked>
+                            وضع علامات (✕) تلقائياً حول القطة الصحيحة وفي صفها وعمودها ولونها
+                        </label>
+                    </div>
+                    <div class="toggle-row">
+                        <label>
+                            <input type="checkbox" id="sound-toggle" checked>
+                            تشغيل المؤثرات الصوتية 🔊
+                        </label>
+                    </div>
                 </div>
 
-                <!-- Tab 2: Correct Sounds (Up to 6) -->
-                <div id="tab-correct-audio" class="tab-pane">
-                    <p class="tab-desc">أضف حتى <strong>6 ملفات صوتية</strong> تعمل عشوائياً عند وضع القطة/الصورة في <strong>المكان الصحيح</strong> (أو اتركها لتعمل أصوات القطة الافتراضية):</p>
-                    <div id="correct-sounds-list" class="custom-list"></div>
+                <!-- Tab 2: Up to 6 Correct Sounds -->
+                <div id="tab-correct" class="tab-pane">
+                    <p class="tab-hint">أضف حتى <strong>6 صوتيات</strong> تعمل عشوائياً عند وضع القطة/صورة ابنك في <strong>المكان الصحيح</strong>:</p>
+                    <div id="correct-audio-list" class="audio-list"></div>
                 </div>
 
-                <!-- Tab 3: Wrong Sounds (Up to 6) -->
-                <div id="tab-wrong-audio" class="tab-pane">
-                    <p class="tab-desc">أضف حتى <strong>6 ملفات صوتية</strong> تعمل عشوائياً عند وضع القطة/الصورة في <strong>مكان خاطئ</strong>:</p>
-                    <div id="wrong-sounds-list" class="custom-list"></div>
+                <!-- Tab 3: Up to 6 Wrong Sounds -->
+                <div id="tab-wrong" class="tab-pane">
+                    <p class="tab-hint">أضف حتى <strong>6 صوتيات</strong> تعمل عشوائياً عند وضع القطة/صورة ابنك في <strong>مكان خاطئ</strong>:</p>
+                    <div id="wrong-audio-list" class="audio-list"></div>
                 </div>
 
-                <div class="modal-buttons settings-footer">
-                    <button id="reset-all-custom-btn" class="secondary-btn">إعادة ضبط الافتراضي 🔄</button>
-                    <button id="save-settings-btn" class="primary-btn">حفظ وإغلاق ✅</button>
+                <div class="modal-footer">
+                    <button id="reset-defaults-btn" class="secondary-btn">إعادة الافتراضي 🔄</button>
+                    <button id="save-close-btn" class="primary-btn">حفظ وإغلاق ✅</button>
                 </div>
             </div>
         </div>
 
-        <!-- Victory Modal -->
+        <!-- Win Modal -->
         <div id="win-modal" class="modal">
             <div class="modal-content">
-                <div class="win-cats">😻 🎉 🏆</div>
-                <h2>أحسنت! مستوى مكتمل</h2>
-                <div class="win-stats">
-                    <p>الوقت المستغرق: <strong id="win-time">00:00</strong></p>
-                    <p>عدد الأخطاء: <strong id="win-mistakes">0</strong></p>
-                    <div id="win-stars" class="stars-display">⭐⭐⭐</div>
-                </div>
-                <div class="modal-buttons">
+                <div class="modal-big-icon">😻 🎉 🏆</div>
+                <h2>رائع! اكتمل المستوى <span id="win-level-num"></span></h2>
+                <p class="win-score-line">النقاط الحالية: <strong id="win-score-val">0</strong></p>
+                <div class="modal-footer">
                     <button id="next-level-btn" class="primary-btn">المستوى التالي ⬅️</button>
-                    <button id="back-to-menu-btn" class="secondary-btn">قائمة المستويات 🗺️</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Over Modal (Lost 3 Fishes) -->
+        <div id="lose-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-big-icon">😿 🐟</div>
+                <h2>انتهت السمكات الثلاث!</h2>
+                <p class="win-score-line">تذكر: لا يمكن لقطتين التواجد في نفس اللون أو الصف أو العمود أو التلامس.</p>
+                <div class="modal-footer">
+                    <button id="retry-level-btn" class="primary-btn">إعادة المحاولة 🔄</button>
                 </div>
             </div>
         </div>

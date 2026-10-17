@@ -1,144 +1,108 @@
-const ITEMS_META = [
-    { id: 1, svg: 'assets/cats/cat1.svg', border: '#E53935', bg: '#FFCDD2', badge: '🐾', name: 'مشمش' },
-    { id: 2, svg: 'assets/cats/cat2.svg', border: '#1E88E5', bg: '#BBDEFB', badge: '🕶️', name: 'سمسم' },
-    { id: 3, svg: 'assets/cats/cat3.svg', border: '#43A047', bg: '#C8E6C9', badge: '🎀', name: 'لوزة' },
-    { id: 4, svg: 'assets/cats/cat4.svg', border: '#FDD835', bg: '#FFF9C4', badge: '🤠', name: 'زعبلاوي' },
-    { id: 5, svg: 'assets/cats/cat5.svg', border: '#8E24AA', bg: '#E1BEE7', badge: '👑', name: 'سيمبا' },
-    { id: 6, svg: 'assets/cats/cat6.svg', border: '#FB8C00', bg: '#FFE0B2', badge: '🦸', name: 'نمر' },
-    { id: 7, svg: 'assets/cats/cat7.svg', border: '#00ACC1', bg: '#B2EBF2', badge: '⚽', name: 'كابتن' },
-    { id: 8, svg: 'assets/cats/cat8.svg', border: '#6D4C41', bg: '#D7CCC8', badge: '🚀', name: 'فضائي' },
-    { id: 9, svg: 'assets/cats/cat9.svg', border: '#D81B60', bg: '#F8BBD0', badge: '🎓', name: 'عبقري' }
+// الألوان الـ 9 المطابقة للصورة المرفقة (Level 117)
+const REGION_COLORS = [
+    '#f2a66b', // 0: البرتقالي الفاتح
+    '#d9b650', // 1: الأصفر الذهبي
+    '#add597', // 2: الأخضر الفاتح
+    '#63ada5', // 3: التركواز (الأخضر المزرق)
+    '#79b5dc', // 4: الأزرق السماوي
+    '#a3b8cf', // 5: الرمادي المزرق
+    '#8b78ce', // 6: البنفسجي
+    '#efb2c9', // 7: الوردي
+    '#9a6d4c'  // 8: البني
 ];
 
-// --- قاعدة بيانات IndexedDB لحفظ الصور و12 مقطع صوتي بدون حدود حجم ---
+const TOTAL_LEVELS = 120;
+
+// --- قاعدة بيانات IndexedDB لحفظ صورة الابن و12 ملف صوتي (6 صح + 6 خطأ) ---
 class CustomStorageDB {
-    constructor() {
-        this.db = null;
-    }
+    constructor() { this.db = null; }
     init() {
         return new Promise((resolve) => {
-            const req = indexedDB.open('MeowdokuCustomDB', 1);
+            const req = indexedDB.open('MeowdokuRegionsDB', 1);
             req.onupgradeneeded = (e) => {
                 const db = e.target.result;
-                if (!db.objectStoreNames.contains('assets')) {
-                    db.createObjectStore('assets');
-                }
+                if (!db.objectStoreNames.contains('store')) db.createObjectStore('store');
             };
-            req.onsuccess = (e) => {
-                this.db = e.target.result;
-                resolve();
-            };
+            req.onsuccess = (e) => { this.db = e.target.result; resolve(); };
             req.onerror = () => resolve();
         });
     }
-    setItem(key, val) {
+    set(key, val) {
         return new Promise((resolve) => {
             if (!this.db) return resolve();
-            const tx = this.db.transaction('assets', 'readwrite');
-            tx.objectStore('assets').put(val, key);
+            const tx = this.db.transaction('store', 'readwrite');
+            tx.objectStore('store').put(val, key);
             tx.oncomplete = () => resolve();
         });
     }
-    getItem(key) {
+    get(key) {
         return new Promise((resolve) => {
             if (!this.db) return resolve(null);
-            const tx = this.db.transaction('assets', 'readonly');
-            const req = tx.objectStore('assets').get(key);
+            const tx = this.db.transaction('store', 'readonly');
+            const req = tx.objectStore('store').get(key);
             req.onsuccess = () => resolve(req.result || null);
             req.onerror = () => resolve(null);
         });
     }
-    deleteItem(key) {
+    del(key) {
         return new Promise((resolve) => {
             if (!this.db) return resolve();
-            const tx = this.db.transaction('assets', 'readwrite');
-            tx.objectStore('assets').delete(key);
+            const tx = this.db.transaction('store', 'readwrite');
+            tx.objectStore('store').delete(key);
             tx.oncomplete = () => resolve();
         });
     }
-    clearAll() {
+    clear() {
         return new Promise((resolve) => {
             if (!this.db) return resolve();
-            const tx = this.db.transaction('assets', 'readwrite');
-            tx.objectStore('assets').clear();
+            const tx = this.db.transaction('store', 'readwrite');
+            tx.objectStore('store').clear();
             tx.oncomplete = () => resolve();
         });
     }
 }
 
-const storageDB = new CustomStorageDB();
+const db = new CustomStorageDB();
 
-// الحالة المحملة للتخصيص
-let customization = {
-    mode: localStorage.getItem('meow_avatar_mode') || 'cats', // 'cats' or 'son'
-    unifiedSonPhoto: null,
-    individualPhotos: {}, // 1..9
-    correctSounds: {},    // 1..6 (DataURL)
-    wrongSounds: {}       // 1..6 (DataURL)
+let settings = {
+    avatarMode: localStorage.getItem('meow_mode') || 'cat', // 'cat' or 'son'
+    sonPhoto: null,
+    autoX: localStorage.getItem('meow_autox') !== 'false',
+    soundEnabled: localStorage.getItem('meow_sound') !== 'false',
+    correctSounds: {}, // 1..6
+    wrongSounds: {}    // 1..6
 };
 
-async function loadCustomAssetsFromDB() {
-    await storageDB.init();
-    customization.unifiedSonPhoto = await storageDB.getItem('unified_son_photo');
-    for (let i = 1; i <= 9; i++) {
-        const img = await storageDB.getItem(`son_photo_${i}`);
-        if (img) customization.individualPhotos[i] = img;
-    }
+async function loadSettingsFromDB() {
+    await db.init();
+    settings.sonPhoto = await db.get('son_photo');
     for (let i = 1; i <= 6; i++) {
-        const cSnd = await storageDB.getItem(`correct_snd_${i}`);
-        if (cSnd) customization.correctSounds[i] = cSnd;
-        const wSnd = await storageDB.getItem(`wrong_snd_${i}`);
-        if (wSnd) customization.wrongSounds[i] = wSnd;
+        const c = await db.get(`correct_snd_${i}`);
+        if (c) settings.correctSounds[i] = c;
+        const w = await db.get(`wrong_snd_${i}`);
+        if (w) settings.wrongSounds[i] = w;
     }
-    updateHeaderBranding();
+    updateBoosterAvatar();
 }
 
-function updateHeaderBranding() {
-    const iconEl = document.getElementById('header-icon');
-    const titleEl = document.getElementById('game-title');
-    if (customization.mode === 'son') {
-        iconEl.textContent = '👦✨';
-        titleEl.textContent = 'سودوكو البطل';
-    } else {
-        iconEl.textContent = '🐾';
-        titleEl.textContent = 'Meowdoku';
+function getActiveAvatarSrc() {
+    if (settings.avatarMode === 'son' && settings.sonPhoto) {
+        return settings.sonPhoto;
     }
+    return 'assets/cats/main_cat.svg';
 }
 
-// إنشاء عنصر القطة أو صورة الابن
-function createAvatarElement(itemId) {
-    const meta = ITEMS_META[itemId - 1];
-    const wrap = document.createElement('div');
-    wrap.className = 'avatar-wrap';
-
-    const img = document.createElement('img');
-    img.className = 'avatar-img';
-
-    if (customization.mode === 'son') {
-        const customSrc = customization.individualPhotos[itemId] || customization.unifiedSonPhoto;
-        if (customSrc) {
-            img.src = customSrc;
-            img.style.border = `3px solid ${meta.border}`;
-            img.style.backgroundColor = meta.bg;
-            const badge = document.createElement('span');
-            badge.className = 'avatar-badge';
-            badge.textContent = meta.badge;
-            wrap.appendChild(img);
-            wrap.appendChild(badge);
-            return wrap;
-        }
-    }
-
-    // الافتراضي: صورة القطة المدمجة
-    img.src = meta.svg;
-    wrap.appendChild(img);
-    return wrap;
+function updateBoosterAvatar() {
+    const img = document.getElementById('booster-cat-img');
+    const prev = document.getElementById('settings-son-preview');
+    const src = getActiveAvatarSrc();
+    if (img) img.src = src;
+    if (prev) prev.src = settings.sonPhoto || 'assets/cats/main_cat.svg';
 }
 
-// --- نظام الصوتيات المتقدم (يدعم حتى 6 أصوات صحيحة و6 أصوات خاطئة + ملفات WAV الافتراضية) ---
-class SoundSystem {
+// --- نظام الصوتيات (يشغل عشوائياً من الـ 6 أصوات المرفوعة أو الأصوات الافتراضية) ---
+class SoundManager {
     constructor() {
-        this.enabled = true;
         this.defaultCorrect = [
             new Audio('assets/sounds/correct1.wav'),
             new Audio('assets/sounds/correct2.wav'),
@@ -150,407 +114,486 @@ class SoundSystem {
         ];
         this.defaultWin = new Audio('assets/sounds/win.wav');
     }
-
-    playRandomCorrect() {
-        if (!this.enabled) return;
-        const customList = Object.values(customization.correctSounds).filter(Boolean);
-        if (customList.length > 0) {
-            const pick = customList[Math.floor(Math.random() * customList.length)];
-            const audio = new Audio(pick.data);
-            audio.play().catch(() => {});
+    playCorrect() {
+        if (!settings.soundEnabled) return;
+        const custom = Object.values(settings.correctSounds).filter(Boolean);
+        if (custom.length > 0) {
+            const pick = custom[Math.floor(Math.random() * custom.length)];
+            new Audio(pick.data).play().catch(() => {});
         } else {
             const pick = this.defaultCorrect[Math.floor(Math.random() * this.defaultCorrect.length)];
             pick.currentTime = 0;
             pick.play().catch(() => {});
         }
     }
-
-    playRandomWrong() {
-        if (!this.enabled) return;
-        const customList = Object.values(customization.wrongSounds).filter(Boolean);
-        if (customList.length > 0) {
-            const pick = customList[Math.floor(Math.random() * customList.length)];
-            const audio = new Audio(pick.data);
-            audio.play().catch(() => {});
+    playWrong() {
+        if (!settings.soundEnabled) return;
+        const custom = Object.values(settings.wrongSounds).filter(Boolean);
+        if (custom.length > 0) {
+            const pick = custom[Math.floor(Math.random() * custom.length)];
+            new Audio(pick.data).play().catch(() => {});
         } else {
             const pick = this.defaultWrong[Math.floor(Math.random() * this.defaultWrong.length)];
             pick.currentTime = 0;
             pick.play().catch(() => {});
         }
     }
-
     playWin() {
-        if (!this.enabled) return;
+        if (!settings.soundEnabled) return;
         this.defaultWin.currentTime = 0;
         this.defaultWin.play().catch(() => {});
     }
 }
 
-const sound = new SoundSystem();
+const sound = new SoundManager();
 
-// --- إعدادات الـ 50 مستوى ---
-function getLevelConfig(levelNum) {
-    if (levelNum <= 15) {
-        const emptyCount = 4 + Math.floor((levelNum - 1) * 0.45);
-        return { level: levelNum, size: 4, boxR: 2, boxC: 2, empty: emptyCount };
-    } else if (levelNum <= 35) {
-        const emptyCount = 12 + Math.floor((levelNum - 16) * 0.55);
-        return { level: levelNum, size: 6, boxR: 2, boxC: 3, empty: emptyCount };
-    } else {
-        const emptyCount = 30 + Math.floor((levelNum - 36) * 1.3);
-        return { level: levelNum, size: 9, boxR: 3, boxC: 3, empty: emptyCount };
-    }
-}
-
+// --- مولد الأرقام العشوائية الثابت لكل مستوى ---
 class SeededRNG {
-    constructor(seed) { this.seed = seed * 98765 + 12345; }
+    constructor(seed) { this.seed = (seed * 2654435761) >>> 0; }
     next() {
-        this.seed = (this.seed * 1664525 + 1013904223) % 4294967296;
+        this.seed = (1664525 * this.seed + 1013904223) >>> 0;
         return this.seed / 4294967296;
     }
     nextInt(max) { return Math.floor(this.next() * max); }
-    shuffle(array) {
-        const arr = [...array];
-        for (let i = arr.length - 1; i > 0; i--) {
+    shuffle(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
             const j = this.nextInt(i + 1);
-            [arr[i], arr[j]] = [arr[j], arr[i]];
+            [a[i], a[j]] = [a[j], a[i]];
         }
-        return arr;
+        return a;
     }
 }
 
-function generateLevelPuzzle(levelNum) {
-    const config = getLevelConfig(levelNum);
-    const { size, boxR, boxC, empty } = config;
-    const rng = new SeededRNG(levelNum);
-
-    let board = Array.from({ length: size }, (_, r) =>
-        Array.from({ length: size }, (_, c) =>
-            ((r * boxC + Math.floor(r / boxR) + c) % size) + 1
-        )
-    );
-
-    const symbolMap = rng.shuffle(Array.from({ length: size }, (_, i) => i + 1));
-    board = board.map(row => row.map(val => symbolMap[val - 1]));
-
-    for (let b = 0; b < size / boxR; b++) {
-        const rowIndices = rng.shuffle(Array.from({ length: boxR }, (_, i) => b * boxR + i));
-        const tempRows = rowIndices.map(r => [...board[r]]);
-        for (let i = 0; i < boxR; i++) board[b * boxR + i] = tempRows[i];
-    }
-
-    for (let b = 0; b < size / boxC; b++) {
-        const colIndices = rng.shuffle(Array.from({ length: boxC }, (_, i) => b * boxC + i));
-        const tempCols = board.map(row => colIndices.map(c => row[c]));
-        for (let r = 0; r < size; r++) {
-            for (let i = 0; i < boxC; i++) board[r][b * boxC + i] = tempCols[r][i];
-        }
-    }
-
-    const solution = board.map(row => [...row]);
-    const puzzle = board.map(row => [...row]);
-
-    const allCoords = [];
-    for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) allCoords.push([r, c]);
-    const shuffledCoords = rng.shuffle(allCoords);
-
-    let removed = 0;
-    for (const [r, c] of shuffledCoords) {
-        if (removed >= empty) break;
-        const rowRemaining = puzzle[r].filter(v => v !== 0).length;
-        const colRemaining = puzzle.map(row => row[c]).filter(v => v !== 0).length;
-        if (rowRemaining > 1 && colRemaining > 1) {
-            puzzle[r][c] = 0;
-            removed++;
-        }
-    }
-    return { config, solution, puzzle };
+// تحديد حجم الشبكة حسب المستوى (من 5×5 للمبتدئين حتى 9×9 للمستويات المتقدمة مثل 117)
+function getGridSizeForLevel(lvl) {
+    if (lvl <= 8) return 5;
+    if (lvl <= 20) return 6;
+    if (lvl <= 35) return 7;
+    if (lvl <= 50) return 8;
+    return 9;
 }
 
-let progressData = JSON.parse(localStorage.getItem('meowdoku_v2_save')) || {
-    unlockedLevel: 1,
-    stars: {}
+// --- توليد لغز مناطق الألوان (Star Battle / Queens) ---
+function generateRegionsPuzzle(levelNum) {
+    const N = getGridSizeForLevel(levelNum);
+    const rng = new SeededRNG(levelNum * 97 + 13);
+
+    // 1. إيجاد أماكن N قطط بحيث لا تشترك في صف أو عمود ولا تتلامس حتى قطرياً
+    const catCols = new Array(N).fill(-1);
+    const usedCols = new Array(N).fill(false);
+
+    function placeRow(r) {
+        if (r === N) return true;
+        const candidates = rng.shuffle(Array.from({ length: N }, (_, i) => i));
+        for (const c of candidates) {
+            if (usedCols[c]) continue;
+            // منع التلامس القطري أو الرأسي مع الصف السابق
+            if (r > 0 && Math.abs(c - catCols[r - 1]) <= 1) continue;
+            catCols[r] = c;
+            usedCols[c] = true;
+            if (placeRow(r + 1)) return true;
+            usedCols[c] = false;
+        }
+        return false;
+    }
+    placeRow(0);
+
+    // 2. بناء N مناطق لونية متصلة حول مواقع القطط (بأحجام متفاوتة تشبه المستوى 117)
+    const colorGrid = Array.from({ length: N }, () => new Array(N).fill(-1));
+    const regionMaxCap = new Array(N).fill(N * N);
+
+    // جعل منطقة أو منطقتين صغيرتين (خلية واحدة أو 3 خلايا) لمساعدة اللاعب على بدء الحل منطقياً
+    const regionOrder = rng.shuffle(Array.from({ length: N }, (_, i) => i));
+    regionMaxCap[regionOrder[0]] = 1 + (levelNum % 2); // منطقة صغيرة جداً كمفتاح للحل
+    if (N >= 6) regionMaxCap[regionOrder[1]] = 3 + (levelNum % 3);
+
+    const regionSizes = new Array(N).fill(1);
+    const frontier = [];
+
+    for (let r = 0; r < N; r++) {
+        const c = catCols[r];
+        colorGrid[r][c] = r; // رقم اللون 0..N-1
+        frontier.push({ r, c, color: r });
+    }
+
+    const dirs = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+    let unassigned = N * N - N;
+
+    let guard = 0;
+    while (unassigned > 0 && guard < 5000) {
+        guard++;
+        // إذا وصلت كل المناطق المفتوحة للحد الأقصى، ارفع الحد الأقصى
+        if (guard > 400) regionMaxCap.fill(N * N);
+
+        const idx = rng.nextInt(frontier.length);
+        const cell = frontier[idx];
+        const color = cell.color;
+
+        if (regionSizes[color] >= regionMaxCap[color]) continue;
+
+        const shuffledDirs = rng.shuffle(dirs);
+        let expanded = false;
+        for (const [dr, dc] of shuffledDirs) {
+            const nr = cell.r + dr;
+            const nc = cell.c + dc;
+            if (nr >= 0 && nr < N && nc >= 0 && nc < N && colorGrid[nr][nc] === -1) {
+                colorGrid[nr][nc] = color;
+                regionSizes[color]++;
+                unassigned--;
+                frontier.push({ r: nr, c: nc, color });
+                expanded = true;
+                break;
+            }
+        }
+    }
+
+    // تعبئة أي خلية متبقية بأقرب لون مجاور
+    for (let r = 0; r < N; r++) {
+        for (let c = 0; c < N; c++) {
+            if (colorGrid[r][c] === -1) {
+                for (const [dr, dc] of dirs) {
+                    const nr = r + dr, nc = c + dc;
+                    if (nr >= 0 && nr < N && nc >= 0 && nc < N && colorGrid[nr][nc] !== -1) {
+                        colorGrid[r][c] = colorGrid[nr][nc];
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    return { N, catCols, colorGrid };
+}
+
+// --- حالة اللعب المحفوظة ---
+let saveState = JSON.parse(localStorage.getItem('meowdoku_regions_save')) || {
+    currentLevel: 1,
+    completed: {},
+    score: 0,
+    boosters: { cat: 7, hint: 9, mouse: 2 }
 };
 
-let currentState = {
+function persistSave() {
+    localStorage.setItem('meowdoku_regions_save', JSON.stringify(saveState));
+}
+
+let game = {
     level: 1,
-    config: null,
-    solution: [],
-    initialPuzzle: [],
-    userBoard: [],
-    selectedCell: null,
-    mistakes: 0,
-    hintsLeft: 3,
-    seconds: 0,
-    timerInterval: null
+    N: 9,
+    catCols: [],
+    colorGrid: [],
+    boardState: [], // 0 = empty, 1 = X, 2 = Cat
+    lives: 3
 };
 
+// --- عناصر الواجهة ---
 const levelScreen = document.getElementById('level-screen');
 const gameScreen = document.getElementById('game-screen');
-const levelsGrid = document.getElementById('levels-grid');
-const completedCountEl = document.getElementById('completed-count');
-const menuBtn = document.getElementById('menu-btn');
-const soundBtn = document.getElementById('sound-btn');
-const settingsBtn = document.getElementById('settings-btn');
-const boardEl = document.getElementById('sudoku-board');
-const paletteEl = document.getElementById('item-palette');
-const winModal = document.getElementById('win-modal');
-const settingsModal = document.getElementById('settings-modal');
+const boardEl = document.getElementById('regions-board');
+const silhouettesBar = document.getElementById('cat-silhouettes-bar');
 
-function renderLevelSelect() {
-    levelsGrid.innerHTML = '';
-    completedCountEl.textContent = Object.keys(progressData.stars).length;
+function startLevel(lvl) {
+    game.level = lvl;
+    saveState.currentLevel = lvl;
+    persistSave();
 
-    for (let i = 1; i <= 50; i++) {
-        const btn = document.createElement('div');
-        const isUnlocked = i <= progressData.unlockedLevel;
-        const stars = progressData.stars[i] || 0;
+    const puzzle = generateRegionsPuzzle(lvl);
+    game.N = puzzle.N;
+    game.catCols = puzzle.catCols;
+    game.colorGrid = puzzle.colorGrid;
+    game.boardState = Array.from({ length: game.N }, () => new Array(game.N).fill(0));
+    game.lives = 3;
 
-        btn.className = `level-btn ${isUnlocked ? 'unlocked' : 'locked'} ${stars > 0 ? 'completed' : ''}`;
-        btn.innerHTML = `
-            <span class="level-num">${isUnlocked ? i : '🔒'}</span>
-            <span class="level-stars">${stars > 0 ? '⭐'.repeat(stars) : ''}</span>
-        `;
-        if (isUnlocked) btn.addEventListener('click', () => startLevel(i));
-        levelsGrid.appendChild(btn);
-    }
-}
-
-function startLevel(levelNum) {
-    const generated = generateLevelPuzzle(levelNum);
-    currentState = {
-        level: levelNum,
-        config: generated.config,
-        solution: generated.solution,
-        initialPuzzle: generated.puzzle.map(r => [...r]),
-        userBoard: generated.puzzle.map(r => [...r]),
-        selectedCell: null,
-        mistakes: 0,
-        hintsLeft: 3,
-        seconds: 0,
-        timerInterval: null
-    };
-
-    document.getElementById('current-level-display').textContent = levelNum;
-    document.getElementById('mistakes-display').textContent = '0';
-    document.getElementById('hints-left').textContent = '3';
-    document.getElementById('timer-display').textContent = '00:00';
+    document.getElementById('level-num-display').textContent = lvl;
+    document.getElementById('score-display').textContent = saveState.score;
+    updateBoostersUI();
+    renderLivesUI();
+    renderSilhouettesBar();
+    renderBoard();
 
     levelScreen.classList.remove('active');
     gameScreen.classList.add('active');
-    menuBtn.style.display = 'block';
+}
 
-    renderBoard();
-    renderPalette();
-    startTimer();
+function renderSilhouettesBar() {
+    silhouettesBar.innerHTML = '';
+    for (let c = 0; c < game.N; c++) {
+        const hex = REGION_COLORS[c % REGION_COLORS.length];
+        const div = document.createElement('div');
+        div.className = 'cat-sil';
+        div.dataset.color = c;
+        div.innerHTML = `<svg viewBox="0 0 100 100">
+            <path d="M18,45 L14,12 L42,28 Q50,25 58,28 L86,12 L82,45 Q92,60 88,78 Q80,95 50,95 Q20,95 12,78 Q8,60 18,45 Z" fill="${hex}"/>
+        </svg>`;
+        silhouettesBar.appendChild(div);
+    }
+    updateSilhouettesStatus();
+}
+
+function updateSilhouettesStatus() {
+    const foundColors = new Set();
+    for (let r = 0; r < game.N; r++) {
+        for (let c = 0; c < game.N; c++) {
+            if (game.boardState[r][c] === 2) {
+                foundColors.add(game.colorGrid[r][c]);
+            }
+        }
+    }
+    silhouettesBar.querySelectorAll('.cat-sil').forEach(el => {
+        const colIdx = parseInt(el.dataset.color);
+        el.classList.toggle('found', foundColors.has(colIdx));
+    });
+}
+
+function renderLivesUI() {
+    const fishes = document.querySelectorAll('#lives-bar .fish-icon');
+    fishes.forEach((f, idx) => {
+        f.classList.toggle('lost', idx >= game.lives);
+    });
+}
+
+function updateBoostersUI() {
+    document.getElementById('badge-cat').textContent = saveState.boosters.cat;
+    document.getElementById('badge-hint').textContent = saveState.boosters.hint;
+    document.getElementById('badge-mouse').textContent = saveState.boosters.mouse;
 }
 
 function renderBoard() {
-    if (!currentState.config) return;
-    const { size, boxR, boxC } = currentState.config;
+    const N = game.N;
     boardEl.innerHTML = '';
-    boardEl.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
-    boardEl.style.gridTemplateRows = `repeat(${size}, 1fr)`;
+    boardEl.style.gridTemplateColumns = `repeat(${N}, 1fr)`;
+    boardEl.style.gridTemplateRows = `repeat(${N}, 1fr)`;
 
-    for (let r = 0; r < size; r++) {
-        for (let c = 0; c < size; c++) {
-            const cell = document.createElement('div');
-            cell.className = 'cell';
-            cell.dataset.r = r;
-            cell.dataset.c = c;
+    for (let r = 0; r < N; r++) {
+        for (let c = 0; c < N; c++) {
+            const tile = document.createElement('div');
+            tile.className = 'tile';
+            tile.dataset.r = r;
+            tile.dataset.c = c;
+            const colorIdx = game.colorGrid[r][c];
+            tile.style.backgroundColor = REGION_COLORS[colorIdx % REGION_COLORS.length];
 
-            if ((r + 1) % boxR === 0 && r < size - 1) cell.style.borderBottom = '3px solid var(--border-strong)';
-            if ((c + 1) % boxC === 0 && c < size - 1) cell.style.borderLeft = '3px solid var(--border-strong)';
+            const state = game.boardState[r][c];
+            if (state === 1) {
+                tile.innerHTML = `<span class="tile-x">✕</span>`;
+            } else if (state === 2) {
+                const img = document.createElement('img');
+                img.src = getActiveAvatarSrc();
+                img.className = `tile-avatar ${settings.avatarMode === 'son' && settings.sonPhoto ? 'son-mode' : ''}`;
+                tile.appendChild(img);
+            }
 
-            const val = currentState.userBoard[r][c];
-            if (currentState.initialPuzzle[r][c] !== 0) cell.classList.add('fixed');
-            if (val !== 0) cell.appendChild(createAvatarElement(val));
-
-            cell.addEventListener('click', () => selectCell(r, c));
-            boardEl.appendChild(cell);
+            tile.addEventListener('click', () => onTileTap(r, c));
+            boardEl.appendChild(tile);
         }
     }
-    updateBoardHighlights();
 }
 
-function renderPalette() {
-    if (!currentState.config) return;
-    const { size } = currentState.config;
-    paletteEl.innerHTML = '';
+// التحقق مما إذا كان وضع قطة في (r, c) يخالف القواعد الثلاث
+function hasRuleViolation(r, c) {
+    // هل هي الخلية الصحيحة للحل؟
+    if (game.catCols[r] !== c) return true;
 
-    for (let i = 0; i < size; i++) {
-        const meta = ITEMS_META[i];
-        const btn = document.createElement('button');
-        btn.className = 'palette-btn';
-
-        const box = document.createElement('div');
-        box.className = 'palette-avatar-box';
-        box.appendChild(createAvatarElement(meta.id));
-
-        const nameSpan = document.createElement('span');
-        nameSpan.className = 'palette-name';
-        nameSpan.textContent = meta.name;
-
-        btn.appendChild(box);
-        btn.appendChild(nameSpan);
-        btn.addEventListener('click', () => placeItem(meta.id));
-        paletteEl.appendChild(btn);
-    }
-}
-
-function selectCell(r, c) {
-    currentState.selectedCell = { r, c };
-    updateBoardHighlights();
-}
-
-function hasConflict(r, c, val) {
-    const { size, boxR, boxC } = currentState.config;
-    const board = currentState.userBoard;
-    for (let i = 0; i < size; i++) {
-        if (i !== c && board[r][i] === val) return true;
-        if (i !== r && board[i][c] === val) return true;
-    }
-    const startR = Math.floor(r / boxR) * boxR;
-    const startC = Math.floor(c / boxC) * boxC;
-    for (let rr = startR; rr < startR + boxR; rr++) {
-        for (let cc = startC; cc < startC + boxC; cc++) {
-            if ((rr !== r || cc !== c) && board[rr][cc] === val) return true;
+    const myColor = game.colorGrid[r][c];
+    for (let rr = 0; rr < game.N; rr++) {
+        for (let cc = 0; cc < game.N; cc++) {
+            if (rr === r && cc === c) continue;
+            if (game.boardState[rr][cc] === 2) {
+                if (rr === r || cc === c) return true; // نفس الصف أو العمود
+                if (game.colorGrid[rr][cc] === myColor) return true; // نفس اللون
+                if (Math.abs(rr - r) <= 1 && Math.abs(cc - c) <= 1) return true; // تلامس
+            }
         }
     }
     return false;
 }
 
-function updateBoardHighlights() {
-    const { boxR, boxC } = currentState.config;
-    const sel = currentState.selectedCell;
-    const selectedVal = sel ? currentState.userBoard[sel.r][sel.c] : 0;
-
-    boardEl.querySelectorAll('.cell').forEach(cell => {
-        const r = parseInt(cell.dataset.r);
-        const c = parseInt(cell.dataset.c);
-        const val = currentState.userBoard[r][c];
-
-        cell.classList.remove('selected', 'related', 'same-item', 'error');
-
-        if (sel) {
-            const sameBox = Math.floor(r / boxR) === Math.floor(sel.r / boxR) &&
-                            Math.floor(c / boxC) === Math.floor(sel.c / boxC);
-            if (r === sel.r && c === sel.c) cell.classList.add('selected');
-            else if (r === sel.r || c === sel.c || sameBox) cell.classList.add('related');
-            if (val !== 0 && val === selectedVal) cell.classList.add('same-item');
-        }
-
-        if (val !== 0 && (hasConflict(r, c, val) || val !== currentState.solution[r][c])) {
-            cell.classList.add('error');
-        }
-    });
-}
-
-function placeItem(itemId) {
-    const sel = currentState.selectedCell;
-    if (!sel) return;
-    const { r, c } = sel;
-    if (currentState.initialPuzzle[r][c] !== 0) return;
-
-    currentState.userBoard[r][c] = itemId;
-    const cellEl = boardEl.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
-    cellEl.innerHTML = '';
-    cellEl.appendChild(createAvatarElement(itemId));
-    cellEl.classList.remove('pop');
-    void cellEl.offsetWidth;
-    cellEl.classList.add('pop');
-
-    // فحص ما إذا كان المكان صحيحاً أم خاطئاً وتشغيل الصوت العشوائي المناسب
-    const isCorrectSpot = (itemId === currentState.solution[r][c]) && !hasConflict(r, c, itemId);
-    if (isCorrectSpot) {
-        sound.playRandomCorrect();
-    } else {
-        currentState.mistakes++;
-        document.getElementById('mistakes-display').textContent = currentState.mistakes;
-        sound.playRandomWrong();
-    }
-
-    updateBoardHighlights();
-    checkWinCondition();
-}
-
-document.getElementById('erase-btn').addEventListener('click', () => {
-    const sel = currentState.selectedCell;
-    if (!sel) return;
-    const { r, c } = sel;
-    if (currentState.initialPuzzle[r][c] !== 0) return;
-    currentState.userBoard[r][c] = 0;
-    boardEl.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`).innerHTML = '';
-    updateBoardHighlights();
-});
-
-document.getElementById('hint-btn').addEventListener('click', () => {
-    if (currentState.hintsLeft <= 0) return;
-    const { size } = currentState.config;
-    let target = currentState.selectedCell;
-    if (!target || currentState.userBoard[target.r][target.c] === currentState.solution[target.r][target.c]) {
-        target = null;
-        for (let r = 0; r < size; r++) {
-            for (let c = 0; c < size; c++) {
-                if (currentState.userBoard[r][c] !== currentState.solution[r][c]) {
-                    target = { r, c };
-                    break;
-                }
+// وضع علامات X تلقائياً حول القطة وفي صفها وعمودها ولونها
+function autoFillXsAround(r, c) {
+    if (!settings.autoX) return;
+    const myColor = game.colorGrid[r][c];
+    for (let rr = 0; rr < game.N; rr++) {
+        for (let cc = 0; cc < game.N; cc++) {
+            if (game.boardState[rr][cc] !== 0) continue;
+            const sameRowCol = (rr === r || cc === c);
+            const sameColor = (game.colorGrid[rr][cc] === myColor);
+            const touching = (Math.abs(rr - r) <= 1 && Math.abs(cc - c) <= 1);
+            if (sameRowCol || sameColor || touching) {
+                game.boardState[rr][cc] = 1;
             }
-            if (target) break;
         }
     }
-    if (target) {
-        currentState.hintsLeft--;
-        document.getElementById('hints-left').textContent = currentState.hintsLeft;
-        currentState.selectedCell = target;
-        placeItem(currentState.solution[target.r][target.c]);
+}
+
+function onTileTap(r, c) {
+    const cur = game.boardState[r][c];
+    if (cur === 0) {
+        // الضغطة الأولى: وضع علامة X
+        game.boardState[r][c] = 1;
+        renderBoard();
+    } else if (cur === 1) {
+        // الضغطة الثانية: محاولة وضع القطة / صورة الابن
+        placeCatAt(r, c);
+    } else if (cur === 2) {
+        // الضغطة الثالثة: مسح
+        game.boardState[r][c] = 0;
+        renderBoard();
+        updateSilhouettesStatus();
+    }
+}
+
+function placeCatAt(r, c) {
+    if (hasRuleViolation(r, c)) {
+        // إجابة خاطئة! تشغيل صوت الخطأ العشوائي وإنقاص سمكة
+        sound.playWrong();
+        game.lives--;
+        renderLivesUI();
+
+        const tileEl = boardEl.querySelector(`.tile[data-r="${r}"][data-c="${c}"]`);
+        if (tileEl) {
+            tileEl.classList.add('error-shake');
+            setTimeout(() => tileEl.classList.remove('error-shake'), 450);
+        }
+
+        if (game.lives <= 0) {
+            setTimeout(() => {
+                document.getElementById('lose-modal').classList.add('active');
+            }, 350);
+        }
+        return;
+    }
+
+    // إجابة صحيحة! تشغيل صوت الصح العشوائي وإضافة النقاط
+    game.boardState[r][c] = 2;
+    autoFillXsAround(r, c);
+    sound.playCorrect();
+
+    saveState.score += 10;
+    document.getElementById('score-display').textContent = saveState.score;
+    persistSave();
+
+    renderBoard();
+    updateSilhouettesStatus();
+    checkVictory();
+}
+
+function checkVictory() {
+    let catsPlaced = 0;
+    for (let r = 0; r < game.N; r++) {
+        const c = game.catCols[r];
+        if (game.boardState[r][c] === 2) catsPlaced++;
+    }
+    if (catsPlaced === game.N) {
+        saveState.completed[game.level] = true;
+        saveState.score += 50;
+        persistSave();
+        setTimeout(() => {
+            sound.playWin();
+            document.getElementById('win-level-num').textContent = game.level;
+            document.getElementById('win-score-val').textContent = saveState.score;
+            document.getElementById('win-modal').classList.add('active');
+        }, 250);
+    }
+}
+
+// --- الأزرار المساعدة الثلاثة بالأسفل (القطة، المصباح، الفأر) ---
+document.getElementById('booster-cat').addEventListener('click', () => {
+    if (saveState.boosters.cat <= 0) return;
+    const unplacedRows = [];
+    for (let r = 0; r < game.N; r++) {
+        const c = game.catCols[r];
+        if (game.boardState[r][c] !== 2) unplacedRows.push([r, c]);
+    }
+    if (unplacedRows.length === 0) return;
+    saveState.boosters.cat--;
+    updateBoostersUI();
+    persistSave();
+
+    const [r, c] = unplacedRows[Math.floor(Math.random() * unplacedRows.length)];
+    placeCatAt(r, c);
+});
+
+document.getElementById('booster-hint').addEventListener('click', () => {
+    if (saveState.boosters.hint <= 0) return;
+    for (let r = 0; r < game.N; r++) {
+        const c = game.catCols[r];
+        if (game.boardState[r][c] !== 2) {
+            saveState.boosters.hint--;
+            updateBoostersUI();
+            persistSave();
+            const tileEl = boardEl.querySelector(`.tile[data-r="${r}"][data-c="${c}"]`);
+            if (tileEl) {
+                tileEl.classList.add('hint-glow');
+                setTimeout(() => tileEl.classList.remove('hint-glow'), 2500);
+            }
+            break;
+        }
     }
 });
 
-document.getElementById('restart-btn').addEventListener('click', () => startLevel(currentState.level));
-
-function checkWinCondition() {
-    const { size } = currentState.config;
-    for (let r = 0; r < size; r++) {
-        for (let c = 0; c < size; c++) {
-            const val = currentState.userBoard[r][c];
-            if (val === 0 || val !== currentState.solution[r][c]) return;
+document.getElementById('booster-mouse').addEventListener('click', () => {
+    if (saveState.boosters.mouse <= 0) return;
+    const wrongEmpty = [];
+    for (let r = 0; r < game.N; r++) {
+        for (let c = 0; c < game.N; c++) {
+            if (game.boardState[r][c] === 0 && game.catCols[r] !== c) {
+                wrongEmpty.push([r, c]);
+            }
         }
     }
-    clearInterval(currentState.timerInterval);
-    setTimeout(() => sound.playWin(), 250);
+    if (wrongEmpty.length === 0) return;
+    saveState.boosters.mouse--;
+    updateBoostersUI();
+    persistSave();
 
-    const stars = currentState.mistakes === 0 ? 3 : currentState.mistakes <= 2 ? 2 : 1;
-    progressData.stars[currentState.level] = Math.max(progressData.stars[currentState.level] || 0, stars);
-    if (currentState.level === progressData.unlockedLevel && currentState.level < 50) {
-        progressData.unlockedLevel++;
+    // الفأر يضع X في 5 مربعات فارغة خاطئة
+    wrongEmpty.sort(() => Math.random() - 0.5);
+    wrongEmpty.slice(0, 5).forEach(([r, c]) => {
+        game.boardState[r][c] = 1;
+    });
+    renderBoard();
+});
+
+// --- خريطة المستويات (1 - 120) ---
+function renderLevelsGrid() {
+    const grid = document.getElementById('levels-grid');
+    grid.innerHTML = '';
+    for (let i = 1; i <= TOTAL_LEVELS; i++) {
+        const btn = document.createElement('button');
+        const isDone = !!saveState.completed[i];
+        btn.className = `lvl-btn ${isDone ? 'completed' : ''} ${i === game.level ? 'current' : ''}`;
+        btn.innerHTML = `<div>${i}</div><div style="font-size:0.7rem">${isDone ? '🐾' : `${getGridSizeForLevel(i)}×${getGridSizeForLevel(i)}`}</div>`;
+        btn.addEventListener('click', () => startLevel(i));
+        grid.appendChild(btn);
     }
-    localStorage.setItem('meowdoku_v2_save', JSON.stringify(progressData));
-
-    document.getElementById('win-time').textContent = formatTime(currentState.seconds);
-    document.getElementById('win-mistakes').textContent = currentState.mistakes;
-    document.getElementById('win-stars').textContent = '⭐'.repeat(stars);
-    document.getElementById('next-level-btn').style.display = currentState.level < 50 ? 'block' : 'none';
-    winModal.classList.add('active');
 }
 
-function startTimer() {
-    clearInterval(currentState.timerInterval);
-    currentState.seconds = 0;
-    currentState.timerInterval = setInterval(() => {
-        currentState.seconds++;
-        document.getElementById('timer-display').textContent = formatTime(currentState.seconds);
-    }, 1000);
-}
+document.getElementById('back-btn').addEventListener('click', () => {
+    if (gameScreen.classList.contains('active')) {
+        gameScreen.classList.remove('active');
+        levelScreen.classList.add('active');
+        renderLevelsGrid();
+    } else {
+        levelScreen.classList.remove('active');
+        gameScreen.classList.add('active');
+    }
+});
 
-function formatTime(sec) {
-    const m = String(Math.floor(sec / 60)).padStart(2, '0');
-    const s = String(sec % 60).padStart(2, '0');
-    return `${m}:${s}`;
-}
+document.getElementById('next-level-btn').addEventListener('click', () => {
+    document.getElementById('win-modal').classList.remove('active');
+    const nextLvl = game.level < TOTAL_LEVELS ? game.level + 1 : 1;
+    startLevel(nextLvl);
+});
 
-// --- إدارة نافذة الإعدادات (الصور + 6 أصوات صحيحة + 6 أصوات خاطئة) ---
+document.getElementById('retry-level-btn').addEventListener('click', () => {
+    document.getElementById('lose-modal').classList.remove('active');
+    startLevel(game.level);
+});
+
+// --- نافذة الإعدادات (صورة الابن + 6 صوتيات صح + 6 صوتيات خطأ) ---
+const settingsModal = document.getElementById('settings-modal');
+
 document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -562,215 +605,139 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 
 document.querySelectorAll('input[name="avatar-mode"]').forEach(radio => {
     radio.addEventListener('change', (e) => {
-        customization.mode = e.target.value;
-        localStorage.setItem('meow_avatar_mode', customization.mode);
-        updateHeaderBranding();
-        if (gameScreen.classList.contains('active')) {
-            renderBoard();
-            renderPalette();
-        }
+        settings.avatarMode = e.target.value;
+        localStorage.setItem('meow_mode', settings.avatarMode);
+        updateBoosterAvatar();
+        renderBoard();
     });
 });
 
-function resizeImageFile(file, callback) {
+document.getElementById('auto-x-toggle').addEventListener('change', (e) => {
+    settings.autoX = e.target.checked;
+    localStorage.setItem('meow_autox', settings.autoX);
+});
+
+document.getElementById('sound-toggle').addEventListener('change', (e) => {
+    settings.soundEnabled = e.target.checked;
+    localStorage.setItem('meow_sound', settings.soundEnabled);
+});
+
+// رفع وقص صورة وجه الابن تلقائياً
+document.getElementById('son-photo-input').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = (ev) => {
         const img = new Image();
-        img.onload = () => {
+        img.onload = async () => {
             const canvas = document.createElement('canvas');
-            const size = 180;
+            const size = 200;
             canvas.width = size;
             canvas.height = size;
             const ctx = canvas.getContext('2d');
             const minDim = Math.min(img.width, img.height);
             ctx.drawImage(img, (img.width - minDim) / 2, (img.height - minDim) / 2, minDim, minDim, 0, 0, size, size);
-            callback(canvas.toDataURL('image/jpeg', 0.85));
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+            settings.sonPhoto = dataUrl;
+            settings.avatarMode = 'son';
+            localStorage.setItem('meow_mode', 'son');
+            await db.set('son_photo', dataUrl);
+            renderSettingsUI();
+            updateBoosterAvatar();
+            renderBoard();
         };
-        img.src = e.target.result;
+        img.src = ev.target.result;
     };
     reader.readAsDataURL(file);
-}
-
-// رفع صورة موحدة للابن
-document.getElementById('single-son-input').addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    resizeImageFile(file, async (dataUrl) => {
-        customization.unifiedSonPhoto = dataUrl;
-        customization.mode = 'son';
-        localStorage.setItem('meow_avatar_mode', 'son');
-        await storageDB.setItem('unified_son_photo', dataUrl);
-        renderSettingsContent();
-        updateHeaderBranding();
-        if (gameScreen.classList.contains('active')) {
-            renderBoard();
-            renderPalette();
-        }
-    });
 });
 
-function renderSettingsContent() {
-    // ضبط زر الراديو الحالي
-    document.querySelectorAll('input[name="avatar-mode"]').forEach(r => {
-        r.checked = (r.value === customization.mode);
-    });
-
-    // 1. قائمة الـ 9 صور الفردية
-    const facesList = document.getElementById('custom-faces-list');
-    facesList.innerHTML = '';
-    ITEMS_META.forEach(meta => {
-        const row = document.createElement('div');
-        row.className = 'custom-row';
-
-        const info = document.createElement('div');
-        info.className = 'row-info';
-        const previewBox = document.createElement('div');
-        previewBox.style.width = '36px';
-        previewBox.style.height = '36px';
-        previewBox.appendChild(createAvatarElement(meta.id));
-        info.appendChild(previewBox);
-        info.insertAdjacentHTML('beforeend', `<span><strong>شكل ${meta.id}:</strong> ${meta.name} ${meta.badge}</span>`);
-
-        const actions = document.createElement('div');
-        actions.className = 'row-actions';
-        const upLabel = document.createElement('label');
-        upLabel.className = 'mini-btn upload';
-        upLabel.textContent = '📷 صورة';
-        const inp = document.createElement('input');
-        inp.type = 'file';
-        inp.accept = 'image/*';
-        inp.style.display = 'none';
-        inp.addEventListener('change', (e) => {
-            if (!e.target.files[0]) return;
-            resizeImageFile(e.target.files[0], async (dataUrl) => {
-                customization.individualPhotos[meta.id] = dataUrl;
-                customization.mode = 'son';
-                localStorage.setItem('meow_avatar_mode', 'son');
-                await storageDB.setItem(`son_photo_${meta.id}`, dataUrl);
-                renderSettingsContent();
-                if (gameScreen.classList.contains('active')) { renderBoard(); renderPalette(); }
-            });
-        });
-        upLabel.appendChild(inp);
-        actions.appendChild(upLabel);
-        row.appendChild(info);
-        row.appendChild(actions);
-        facesList.appendChild(row);
-    });
-
-    // 2. قائمة الـ 6 أصوات للإجابة الصحيحة
-    renderAudioSlots('correct-sounds-list', customization.correctSounds, 'correct_snd_', 'صوت صحيح');
-
-    // 3. قائمة الـ 6 أصوات للإجابة الخاطئة
-    renderAudioSlots('wrong-sounds-list', customization.wrongSounds, 'wrong_snd_', 'صوت خطأ');
-}
-
-function renderAudioSlots(containerId, soundMap, dbPrefix, labelPrefix) {
+function renderAudioSlotsUI(containerId, mapObj, dbPrefix, labelText) {
     const container = document.getElementById(containerId);
     container.innerHTML = '';
-
     for (let i = 1; i <= 6; i++) {
-        const currentAudio = soundMap[i];
+        const item = mapObj[i];
         const row = document.createElement('div');
-        row.className = 'custom-row';
-
-        const info = document.createElement('div');
-        info.className = 'row-info';
-        info.innerHTML = `<span>🎵 <strong>${labelPrefix} (${i}):</strong> ${currentAudio ? currentAudio.name : 'افتراضي (صوت القطة)'}</span>`;
+        row.className = 'audio-row';
+        row.innerHTML = `<span>🎵 <strong>${labelText} (${i}):</strong> ${item ? item.name : 'افتراضي'}</span>`;
 
         const actions = document.createElement('div');
-        actions.className = 'row-actions';
+        actions.className = 'audio-actions';
 
-        if (currentAudio) {
-            const playBtn = document.createElement('button');
-            playBtn.className = 'mini-btn play';
-            playBtn.textContent = '▶️ سماع';
-            playBtn.addEventListener('click', () => {
-                new Audio(currentAudio.data).play();
-            });
+        if (item) {
+            const playB = document.createElement('button');
+            playB.className = 'mini-btn play';
+            playB.textContent = '▶️';
+            playB.onclick = () => new Audio(item.data).play();
 
-            const delBtn = document.createElement('button');
-            delBtn.className = 'mini-btn delete';
-            delBtn.textContent = '🗑️';
-            delBtn.addEventListener('click', async () => {
-                delete soundMap[i];
-                await storageDB.deleteItem(`${dbPrefix}${i}`);
-                renderSettingsContent();
-            });
-
-            actions.appendChild(playBtn);
-            actions.appendChild(delBtn);
+            const delB = document.createElement('button');
+            delB.className = 'mini-btn del';
+            delB.textContent = '🗑️';
+            delB.onclick = async () => {
+                delete mapObj[i];
+                await db.del(`${dbPrefix}${i}`);
+                renderSettingsUI();
+            };
+            actions.appendChild(playB);
+            actions.appendChild(delB);
         }
 
         const upLabel = document.createElement('label');
-        upLabel.className = 'mini-btn upload';
-        upLabel.textContent = '📁 رفع صوت';
+        upLabel.className = 'mini-btn up';
+        upLabel.textContent = '📁 صوت';
         const inp = document.createElement('input');
         inp.type = 'file';
         inp.accept = 'audio/*';
         inp.style.display = 'none';
-        inp.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = async (ev) => {
-                const entry = { name: file.name.slice(0, 18), data: ev.target.result };
-                soundMap[i] = entry;
-                await storageDB.setItem(`${dbPrefix}${i}`, entry);
-                renderSettingsContent();
+        inp.onchange = (e) => {
+            const f = e.target.files[0];
+            if (!f) return;
+            const r = new FileReader();
+            r.onload = async (ev) => {
+                const entry = { name: f.name.slice(0, 15), data: ev.target.result };
+                mapObj[i] = entry;
+                await db.set(`${dbPrefix}${i}`, entry);
+                renderSettingsUI();
             };
-            reader.readAsDataURL(file);
-        });
-
+            r.readAsDataURL(f);
+        };
         upLabel.appendChild(inp);
         actions.appendChild(upLabel);
-        row.appendChild(info);
         row.appendChild(actions);
         container.appendChild(row);
     }
 }
 
-settingsBtn.addEventListener('click', () => {
-    renderSettingsContent();
+function renderSettingsUI() {
+    document.querySelectorAll('input[name="avatar-mode"]').forEach(r => {
+        r.checked = (r.value === settings.avatarMode);
+    });
+    document.getElementById('auto-x-toggle').checked = settings.autoX;
+    document.getElementById('sound-toggle').checked = settings.soundEnabled;
+    updateBoosterAvatar();
+    renderAudioSlotsUI('correct-audio-list', settings.correctSounds, 'correct_snd_', 'صوت صح');
+    renderAudioSlotsUI('wrong-audio-list', settings.wrongSounds, 'wrong_snd_', 'صوت خطأ');
+}
+
+document.getElementById('settings-btn').addEventListener('click', () => {
+    renderSettingsUI();
     settingsModal.classList.add('active');
 });
 
-document.getElementById('close-settings-top').addEventListener('click', () => settingsModal.classList.remove('active'));
-document.getElementById('save-settings-btn').addEventListener('click', () => settingsModal.classList.remove('active'));
+document.getElementById('close-settings-btn').addEventListener('click', () => settingsModal.classList.remove('active'));
+document.getElementById('save-close-btn').addEventListener('click', () => settingsModal.classList.remove('active'));
 
-document.getElementById('reset-all-custom-btn').addEventListener('click', async () => {
-    await storageDB.clearAll();
-    customization = { mode: 'cats', unifiedSonPhoto: null, individualPhotos: {}, correctSounds: {}, wrongSounds: {} };
-    localStorage.setItem('meow_avatar_mode', 'cats');
-    updateHeaderBranding();
-    renderSettingsContent();
-    if (gameScreen.classList.contains('active')) { renderBoard(); renderPalette(); }
+document.getElementById('reset-defaults-btn').addEventListener('click', async () => {
+    await db.clear();
+    settings.avatarMode = 'cat';
+    settings.sonPhoto = null;
+    settings.correctSounds = {};
+    settings.wrongSounds = {};
+    localStorage.setItem('meow_mode', 'cat');
+    renderSettingsUI();
+    renderBoard();
 });
 
-menuBtn.addEventListener('click', () => {
-    clearInterval(currentState.timerInterval);
-    gameScreen.classList.remove('active');
-    levelScreen.classList.add('active');
-    menuBtn.style.display = 'none';
-    renderLevelSelect();
-});
-
-soundBtn.addEventListener('click', () => {
-    sound.enabled = !sound.enabled;
-    soundBtn.textContent = sound.enabled ? '🔊' : '🔇';
-});
-
-document.getElementById('next-level-btn').addEventListener('click', () => {
-    winModal.classList.remove('active');
-    startLevel(currentState.level + 1);
-});
-
-document.getElementById('back-to-menu-btn').addEventListener('click', () => {
-    winModal.classList.remove('active');
-    menuBtn.click();
-});
-
-// بدء اللعبة بعد تحميل الإعدادات المحفوظة
-loadCustomAssetsFromDB().then(() => {
-    renderLevelSelect();
+// تشغيل اللعبة عند التحميل
+loadSettingsFromDB().then(() => {
+    startLevel(saveState.currentLevel || 1);
 });
