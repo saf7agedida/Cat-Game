@@ -1,8 +1,32 @@
+// ألوان مناطق MawMaw المبهجة الجديدة (مختلفة عن اللعبة القديمة)
 const REGION_COLORS = [
-    '#f2a66b', '#d9b650', '#add597', '#63ada5', '#79b5dc',
-    '#a3b8cf', '#8b78ce', '#efb2c9', '#9a6d4c'
+    '#ff9ff3', // 0: وردي كاندي
+    '#feca57', // 1: أصفر مشمس
+    '#48dbfb', // 2: سماوي مشرق
+    '#1dd1a1', // 3: أخضر نعناعي
+    '#ff6b6b', // 4: مرجاني دافئ
+    '#a29bfe', // 5: لافندر بنفسجي
+    '#ff9f43', // 6: برتقالي مانجو
+    '#00d2d3', // 7: فيروزي
+    '#c8d6e5'  // 8: فضي ناعم
 ];
 const TOTAL_LEVELS = 120;
+
+// قائمة الكؤوس والأوسمة الـ 12 (تفتح مع تقدم كل بروفايل)
+const TROPHIES_LIST = [
+    { id: 't1', icon: '🐣', reqLvl: 1, ar: 'البداية الشجاعة', en: 'Brave Starter', descAr: 'ابدأ رحلتك في ماوماو', descEn: 'Start your MawMaw journey' },
+    { id: 't2', icon: '🌟', reqLvl: 3, ar: 'مكتشف الألوان', en: 'Color Explorer', descAr: 'افتح المستوى 3', descEn: 'Unlock Level 3' },
+    { id: 't3', icon: '🧠', reqLvl: 7, ar: 'المفكر الذكي', en: 'Smart Thinker', descAr: 'افتح المستوى 7', descEn: 'Unlock Level 7' },
+    { id: 't4', icon: '⚡', reqLvl: 12, ar: 'سريع البديهة', en: 'Quick Mind', descAr: 'افتح المستوى 12', descEn: 'Unlock Level 12' },
+    { id: 't5', icon: '🛡️', reqLvl: 20, ar: 'فارس الألغاز', en: 'Puzzle Knight', descAr: 'افتح المستوى 20', descEn: 'Unlock Level 20' },
+    { id: 't6', icon: '🎯', reqLvl: 30, ar: 'قناص المربعات', en: 'Tile Sniper', descAr: 'افتح المستوى 30', descEn: 'Unlock Level 30' },
+    { id: 't7', icon: '🔥', reqLvl: 45, ar: 'البطل المتألق', en: 'Shining Hero', descAr: 'افتح المستوى 45', descEn: 'Unlock Level 45' },
+    { id: 't8', icon: '💎', reqLvl: 60, ar: 'صائد الجواهر', en: 'Gem Hunter', descAr: 'افتح المستوى 60', descEn: 'Unlock Level 60' },
+    { id: 't9', icon: '🚀', reqLvl: 75, ar: 'رائد المجرة', en: 'Galaxy Captain', descAr: 'افتح المستوى 75', descEn: 'Unlock Level 75' },
+    { id: 't10', icon: '🦁', reqLvl: 90, ar: 'قلب الأسد', en: 'Lion Heart', descAr: 'افتح المستوى 90', descEn: 'Unlock Level 90' },
+    { id: 't11', icon: '👑', reqLvl: 105, ar: 'ملك التركيز', en: 'Focus King', descAr: 'افتح المستوى 105', descEn: 'Unlock Level 105' },
+    { id: 't12', icon: '🏆', reqLvl: 120, ar: 'أسطورة MawMaw', en: 'MawMaw Legend', descAr: 'الوصول للمستوى 120', descEn: 'Reach Level 120' }
+];
 
 // --- قاموس اللغتين العربية والإنجليزية ---
 const I18N = {
@@ -11,105 +35,127 @@ const I18N = {
         score: 'النقاط',
         welcomePlayer: 'مرحباً بالبطل:',
         changeProfile: 'تبديل 👥',
-        currentLevel: 'المستوى الحالي',
+        unlockedLvl: 'أعلى مستوى مفتوح',
         totalScore: 'مجموع النقاط',
         playNow: 'العب الآن',
-        levelsMap: 'خريطة المستويات (1 - 120)',
-        settingsAndProfiles: 'الإعدادات والبروفايلات',
-        rulesSummary: 'ضع قطة أو صورة واحدة في كل منطقة لونية، وفي كل صف وعمود، بدون تلامس!',
-        rule1: 'قطة واحدة<br>بكل لون',
-        rule2: 'قطة واحدة<br>بكل صف وعمود',
-        rule3: 'القطط لا<br>تتلامس',
-        tapGuide: 'ضغطة واحدة = وضع/إلغاء <strong>✕</strong> &nbsp;|&nbsp; ضغطتان سريعتان = <strong>وضع القطة / الصورة</strong>',
+        levelsMap: 'خريطة المستويات',
+        luckyWheel: 'عجلة الهدايا',
+        trophiesRoom: 'غرفة الكؤوس',
+        settingsAndProfiles: 'البروفايلات والإعدادات',
+        levelsMapTitle: '🗺️ مراحل مغامرة MawMaw',
+        levelsMapSub: 'افتح المراحل واحدة تلو الأخرى واجمع النجوم الثلاث لكل مرحلة!',
+        trophiesTitle: '🏆 غرفة الكؤوس والأوسمة',
+        trophiesSub: 'العب واربح المستويات لتفتح أوسمة الأبطال الخاصة ببروفايلك!',
+        mRule1: 'واحد بكل لون',
+        mRule2: 'واحد بكل صف وعمود',
+        mRule3: 'ممنوع التلامس',
+        tapGuide: 'ضغطة واحدة = وضع/إلغاء <strong>✕</strong> &nbsp;|&nbsp; ضغطتان سريعتان = <strong>وضع الشخصية</strong>',
+        luckyWheelTitle: '🎡 عجلة هدايا MawMaw',
+        luckyWheelSub: 'لف العجلة واربح مساعدات ونقاط مجانية لبروفايلك!',
+        spinNowBtn: '🎲 لف العجلة الآن!',
         whoIsPlaying: '👋 من سيلعب اليوم؟',
-        chooseProfileSub: 'اختر البروفايل الخاص بك للبدء بصورتك وأصواتك:',
+        chooseProfileSub: 'اختر البروفايل الخاص بك للبدء بصورتك وأصواتك ومراحلك:',
         addNewProfile: '➕ إضافة طفل جديد',
         settingsTitle: '⚙️ الإعدادات والبروفايلات',
         languageLabel: '🌐 اللغة / Language:',
         tabProfiles: '👥 البروفايلات',
         tabCorrect: '✅ أصوات الصح (6)',
         tabWrong: '❌ أصوات الخطأ (6)',
-        profilesHint: 'اختر البروفايل النشط للعب، أو أضف بروفايل جديد لكل ابن بصورته وأصواته الخاصة:',
+        profilesHint: 'اختر البروفايل النشط، أو أضف بروفايل جديد لكل ابن بصورته وأصواته ومستوياته المستقلة:',
         addKidProfileTitle: '➕ إضافة بروفايل طفل جديد',
         choosePhoto: 'اختر صورة الوجه',
         saveProfileBtn: 'حفظ البروفايل وتفعيله ✨',
-        autoXLabel: 'وضع علامات (✕) تلقائياً حول القطة/الصورة الصحيحة',
+        autoXLabel: 'وضع علامات (✕) تلقائياً حول الإجابة الصحيحة',
         soundToggleLabel: 'تشغيل المؤثرات الصوتية 🔊',
         editingSoundsFor: 'تخصيص أصوات البروفايل النشط:',
-        correctSoundsHint: 'أضف حتى 6 صوتيات تعمل عشوائياً عند وضع الصورة في المكان الصحيح:',
-        wrongSoundsHint: 'أضف حتى 6 صوتيات تعمل عشوائياً عند وضع الصورة في مكان خاطئ:',
+        correctSoundsHint: 'أضف حتى 6 صوتيات تعمل عشوائياً عند الإجابة الصحيحة:',
+        wrongSoundsHint: 'أضف حتى 6 صوتيات تعمل عشوائياً عند الإجابة الخاطئة:',
         doneBtn: 'تم ✅',
+        exitConfirmTitle: 'هل تريد الخروج من MawMaw؟',
+        exitConfirmSub: 'تم حفظ تقدمك وجميع نقاطك تلقائياً.',
+        stayBtn: 'البقاء في اللعبة ▶️',
+        exitNowBtn: 'خروج 🚪',
         levelComplete: 'أحسنت! اكتمل المستوى',
         nextLevel: 'المستوى التالي ⬅️',
-        outOfFishes: 'انتهت السمكات الثلاث!',
-        loseHint: 'حاول مرة أخرى وتذكر عدم وضع قطتين في نفس اللون أو الصف أو العمود.',
+        outOfHearts: 'نفدت القلوب الثلاثة!',
+        loseHint: 'حاول مرة أخرى وتذكر: شخصية واحدة فقط في كل لون وصف وعمود بدون تلامس.',
         retryBtn: 'إعادة المحاولة 🔄',
-        defaultCatName: 'القطة اللطيفة',
+        defaultCatName: 'ماوماو',
         activeTag: 'نشط ✓',
         selectTag: 'اختيار',
         soundSlotCorrect: 'صوت صح',
         soundSlotWrong: 'صوت خطأ',
         defaultSound: 'افتراضي',
         uploadSound: '📁 صوت',
-        kidNamePlaceholder: 'اسم الطفل (مثال: سيف)',
-        exitToastMsg: 'اضغط رجوع مرة أخرى للخروج'
+        kidNamePlaceholder: 'اسم الطفل (مثال: سيف)'
     },
     en: {
         level: 'Level',
         score: 'Score',
         welcomePlayer: 'Welcome Hero:',
         changeProfile: 'Switch 👥',
-        currentLevel: 'Current Level',
+        unlockedLvl: 'Unlocked Level',
         totalScore: 'Total Score',
         playNow: 'Play Now',
-        levelsMap: 'Levels Map (1 - 120)',
-        settingsAndProfiles: 'Settings & Profiles',
-        rulesSummary: 'Place 1 Cat/Photo per color region, row, and column without touching!',
-        rule1: '1 Cat per<br>color',
-        rule2: '1 Cat per<br>column and<br>row',
-        rule3: 'Cats cannot<br>touch',
-        tapGuide: '1 Tap = Toggle <strong>✕</strong> &nbsp;|&nbsp; Fast Double-Tap = <strong>Place Cat / Photo</strong>',
+        levelsMap: 'Levels Map',
+        luckyWheel: 'Lucky Wheel',
+        trophiesRoom: 'Trophy Room',
+        settingsAndProfiles: 'Profiles & Settings',
+        levelsMapTitle: '🗺️ MawMaw Adventure Map',
+        levelsMapSub: 'Complete levels one by one to unlock the next challenge!',
+        trophiesTitle: '🏆 Trophies & Badges Room',
+        trophiesSub: 'Beat levels to unlock special hero trophies for your profile!',
+        mRule1: '1 per Color',
+        mRule2: '1 per Row & Col',
+        mRule3: 'No Touching',
+        tapGuide: '1 Tap = Toggle <strong>✕</strong> &nbsp;|&nbsp; Fast Double-Tap = <strong>Place Character</strong>',
+        luckyWheelTitle: '🎡 MawMaw Lucky Wheel',
+        luckyWheelSub: 'Spin the wheel to win free power-ups and bonus score!',
+        spinNowBtn: '🎲 Spin Now!',
         whoIsPlaying: '👋 Who is playing today?',
-        chooseProfileSub: 'Choose your profile to play with your photo & sounds:',
+        chooseProfileSub: 'Choose your profile to play with your photo, sounds & levels:',
         addNewProfile: '➕ Add New Kid Profile',
         settingsTitle: '⚙️ Settings & Profiles',
         languageLabel: '🌐 Language / اللغة:',
         tabProfiles: '👥 Profiles',
         tabCorrect: '✅ Correct Audio (6)',
         tabWrong: '❌ Wrong Audio (6)',
-        profilesHint: 'Select active profile to play, or create a new profile for each kid with their photo and sounds:',
+        profilesHint: 'Select active profile, or create a new profile for each kid with independent levels:',
         addKidProfileTitle: '➕ Add New Kid Profile',
         choosePhoto: 'Choose Face Photo',
         saveProfileBtn: 'Save & Activate Profile ✨',
-        autoXLabel: 'Auto-place (✕) around correct Cat/Photo',
+        autoXLabel: 'Auto-place (✕) around correct character',
         soundToggleLabel: 'Enable Sound Effects 🔊',
         editingSoundsFor: 'Customizing sounds for active profile:',
         correctSoundsHint: 'Add up to 6 sounds played randomly when placing in the right spot:',
         wrongSoundsHint: 'Add up to 6 sounds played randomly when placing in a wrong spot:',
         doneBtn: 'Done ✅',
+        exitConfirmTitle: 'Exit MawMaw Game?',
+        exitConfirmSub: 'Your progress and stars are saved automatically.',
+        stayBtn: 'Stay & Play ▶️',
+        exitNowBtn: 'Exit 🚪',
         levelComplete: 'Awesome! Completed Level',
         nextLevel: 'Next Level ➡️',
-        outOfFishes: 'Out of 3 Fishes!',
+        outOfHearts: 'Out of 3 Hearts!',
         loseHint: 'Try again! Remember: 1 per color, row, and column, and no touching.',
         retryBtn: 'Try Again 🔄',
-        defaultCatName: 'Cute Cat',
+        defaultCatName: 'MawMaw',
         activeTag: 'Active ✓',
         selectTag: 'Select',
         soundSlotCorrect: 'Correct',
         soundSlotWrong: 'Wrong',
         defaultSound: 'Default',
         uploadSound: '📁 Audio',
-        kidNamePlaceholder: 'Kid Name (e.g. Saif)',
-        exitToastMsg: 'Press back again to exit'
+        kidNamePlaceholder: 'Kid Name (e.g. Saif)'
     }
 };
 
-// --- قاعدة بيانات IndexedDB لحفظ البروفايلات المتعددة بصورها وأصواتها ---
+// --- قاعدة بيانات IndexedDB لحفظ البروفايلات وتقدم المراحل ---
 class StorageDB {
     constructor() { this.db = null; }
     init() {
         return new Promise((resolve) => {
-            const req = indexedDB.open('MeowdokuProfilesDB_v3', 1);
+            const req = indexedDB.open('MawMawProfilesDB_v4', 1);
             req.onupgradeneeded = (e) => {
                 const db = e.target.result;
                 if (!db.objectStoreNames.contains('store')) db.createObjectStore('store');
@@ -140,27 +186,38 @@ class StorageDB {
 const db = new StorageDB();
 
 let appPrefs = {
-    lang: localStorage.getItem('meow_lang') || 'ar',
-    autoX: localStorage.getItem('meow_autox') !== 'false',
-    soundEnabled: localStorage.getItem('meow_sound') !== 'false',
-    activeProfileId: localStorage.getItem('meow_active_prof') || 'default_cat'
+    lang: localStorage.getItem('mawmaw_lang') || 'ar',
+    autoX: localStorage.getItem('mawmaw_autox') !== 'false',
+    soundEnabled: localStorage.getItem('mawmaw_sound') !== 'false',
+    activeProfileId: localStorage.getItem('mawmaw_active_prof') || 'default_cat'
 };
 
 let profiles = [];
 
-function createDefaultCatProfile() {
+function createDefaultProfile() {
     return {
         id: 'default_cat',
-        name: 'القطة اللطيفة',
+        name: 'ماوماو',
         isDefaultCat: true,
         photo: 'assets/cats/main_cat.svg',
         correctSounds: {},
         wrongSounds: {},
         currentLevel: 1,
+        unlockedLevel: 1, // المستويات تفتح واحداً تلو الآخر
+        stars: {},        // عدد النجوم لكل مستوى مكتمل
         score: 0,
-        completed: {},
         boosters: { cat: 7, hint: 9, mouse: 2 }
     };
+}
+
+function ensureProfileFields(p) {
+    if (!p.unlockedLevel || p.unlockedLevel < 1) p.unlockedLevel = 1;
+    if (!p.currentLevel || p.currentLevel < 1) p.currentLevel = 1;
+    if (!p.stars) p.stars = {};
+    if (!p.boosters) p.boosters = { cat: 7, hint: 9, mouse: 2 };
+    if (!p.correctSounds) p.correctSounds = {};
+    if (!p.wrongSounds) p.wrongSounds = {};
+    return p;
 }
 
 function getActiveProfile() {
@@ -169,18 +226,17 @@ function getActiveProfile() {
         p = profiles[0];
         appPrefs.activeProfileId = p.id;
     }
-    return p;
+    return ensureProfileFields(p);
 }
 
 async function saveProfilesToDB() {
     await db.set('profiles_list', profiles);
-    localStorage.setItem('meow_active_prof', appPrefs.activeProfileId);
+    localStorage.setItem('mawmaw_active_prof', appPrefs.activeProfileId);
 }
 
-// --- تطبيق اللغة (عربي / إنجليزي) ---
 function applyLanguage(lang) {
     appPrefs.lang = lang;
-    localStorage.setItem('meow_lang', lang);
+    localStorage.setItem('mawmaw_lang', lang);
     const htmlRoot = document.getElementById('html-root');
     htmlRoot.lang = lang;
     htmlRoot.dir = lang === 'ar' ? 'rtl' : 'ltr';
@@ -195,15 +251,13 @@ function applyLanguage(lang) {
     });
 
     document.getElementById('new-profile-name').placeholder = dict.kidNamePlaceholder;
-    document.getElementById('exit-toast').textContent = dict.exitToastMsg;
-
     const catProf = profiles.find(p => p.id === 'default_cat');
     if (catProf) catProf.name = dict.defaultCatName;
 
     updateHomeUI();
 }
 
-// --- نظام الصوتيات لكل بروفايل ---
+// --- نظام الصوتيات ---
 class SoundManager {
     constructor() {
         this.defaultCorrect = [
@@ -252,7 +306,154 @@ class SoundManager {
 
 const sound = new SoundManager();
 
-// --- توليد ألغاز مناطق الألوان (120 مستوى) ---
+// --- مطر الاحتفال الملون (Confetti) عند الفوز ---
+function launchConfetti() {
+    const canvas = document.getElementById('confetti-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const pieces = Array.from({ length: 65 }, () => ({
+        x: Math.random() * canvas.width,
+        y: -20 - Math.random() * 100,
+        w: 8 + Math.random() * 6,
+        h: 10 + Math.random() * 8,
+        color: REGION_COLORS[Math.floor(Math.random() * REGION_COLORS.length)],
+        vy: 3 + Math.random() * 4,
+        vx: -2 + Math.random() * 4,
+        rot: Math.random() * 360,
+        vRot: -5 + Math.random() * 10
+    }));
+
+    let frame = 0;
+    function tick() {
+        frame++;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        pieces.forEach(p => {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.rot += p.vRot;
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate((p.rot * Math.PI) / 180);
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+            ctx.restore();
+        });
+        if (frame < 110) requestAnimationFrame(tick);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    requestAnimationFrame(tick);
+}
+
+// --- إدارة الشاشات وزر الرجوع الفعلي للموبايل (خطوة للوراء + سؤال قبل الخروج) ---
+let currentScreen = 'home'; // 'home' | 'levels' | 'trophies' | 'game'
+
+function navigateToScreen(screenName) {
+    currentScreen = screenName;
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+
+    const topStats = document.getElementById('top-game-stats');
+    const topLogo = document.getElementById('top-logo-wrap');
+    const backBtn = document.getElementById('nav-back-btn');
+
+    if (screenName === 'home') {
+        document.getElementById('home-screen').classList.add('active');
+        topStats.style.display = 'none';
+        topLogo.style.display = 'flex';
+        backBtn.textContent = '👥';
+        updateHomeUI();
+    } else if (screenName === 'levels') {
+        document.getElementById('level-screen').classList.add('active');
+        topStats.style.display = 'none';
+        topLogo.style.display = 'flex';
+        backBtn.textContent = '🏠';
+        renderLevelsGrid();
+    } else if (screenName === 'trophies') {
+        document.getElementById('trophies-screen').classList.add('active');
+        topStats.style.display = 'none';
+        topLogo.style.display = 'flex';
+        backBtn.textContent = '🏠';
+        renderTrophiesGrid();
+    } else if (screenName === 'game') {
+        document.getElementById('game-screen').classList.add('active');
+        topStats.style.display = 'flex';
+        topLogo.style.display = 'none';
+        backBtn.textContent = '🏠';
+    }
+}
+
+// الدالة التي يستدعيها نظام الأندرويد الأصلي عند ضغط زر الرجوع في الموبايل
+window.onHardwareBackPress = function() {
+    // 1. إذا كانت نافذة تأكيد الخروج مفتوحة بالفعل وضغط رجوع، أغلقها وابق في اللعبة
+    const exitModal = document.getElementById('exit-confirm-modal');
+    if (exitModal.classList.contains('active')) {
+        exitModal.classList.remove('active');
+        return 'STAY';
+    }
+
+    // 2. إذا كانت أي نافذة منبثقة أخرى مفتوحة (إعدادات، عجلة حظ، بروفايل)، أغلقها فقط
+    const anyModal = document.querySelector('.modal.active');
+    if (anyModal) {
+        anyModal.classList.remove('active');
+        return 'STAY';
+    }
+
+    // 3. إذا كان اللاعب داخل المرحلة أو خريطة المستويات أو الكؤوس، يرجع خطوة إلى الشاشة الرئيسية (Home)
+    if (currentScreen !== 'home') {
+        navigateToScreen('home');
+        return 'STAY';
+    }
+
+    // 4. إذا كان في الشاشة الرئيسية، افتح نافذة السؤال: "هل تريد الخروج من MawMaw؟"
+    exitModal.classList.add('active');
+    return 'STAY';
+};
+
+// دعم History API للمتصفح العادي أيضاً
+history.pushState({ page: 'mawmaw' }, '');
+window.addEventListener('popstate', () => {
+    window.onHardwareBackPress();
+    history.pushState({ page: 'mawmaw' }, '');
+});
+
+document.getElementById('nav-back-btn').addEventListener('click', () => {
+    if (currentScreen !== 'home') {
+        navigateToScreen('home');
+    } else {
+        openProfilePickerModal();
+    }
+});
+
+document.getElementById('stay-in-game-btn').addEventListener('click', () => {
+    document.getElementById('exit-confirm-modal').classList.remove('active');
+});
+
+document.getElementById('confirm-exit-btn').addEventListener('click', () => {
+    // إغلاق التطبيق عبر Capacitor أو استدعاء الواجهة الأصلية
+    if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+        window.Capacitor.Plugins.App.exitApp();
+    } else if (navigator.app && navigator.app.exitApp) {
+        navigator.app.exitApp();
+    } else {
+        window.close();
+    }
+});
+
+// --- تحديث الشاشة الرئيسية ---
+function updateHomeUI() {
+    const prof = getActiveProfile();
+    if (!prof) return;
+    document.getElementById('home-profile-img').src = prof.photo;
+    document.getElementById('home-profile-name').textContent = prof.name;
+    document.getElementById('home-unlocked-val').textContent = `${prof.unlockedLevel} / ${TOTAL_LEVELS}`;
+    document.getElementById('home-score-val').textContent = prof.score || 0;
+    document.getElementById('play-btn-lvl').textContent = prof.unlockedLevel;
+    document.getElementById('booster-cat-img').src = prof.photo;
+}
+
+// --- توليد ألغاز MawMaw (120 مستوى) ---
 class SeededRNG {
     constructor(seed) { this.seed = (seed * 2654435761) >>> 0; }
     next() {
@@ -280,14 +481,13 @@ function getGridSizeForLevel(lvl) {
 
 function generateRegionsPuzzle(levelNum) {
     const N = getGridSizeForLevel(levelNum);
-    const rng = new SeededRNG(levelNum * 97 + 13);
+    const rng = new SeededRNG(levelNum * 131 + 17);
     const catCols = new Array(N).fill(-1);
     const usedCols = new Array(N).fill(false);
 
     function placeRow(r) {
         if (r === N) return true;
-        const candidates = rng.shuffle(Array.from({ length: N }, (_, i) => i));
-        for (const c of candidates) {
+        for (const c of rng.shuffle(Array.from({ length: N }, (_, i) => i))) {
             if (usedCols[c]) continue;
             if (r > 0 && Math.abs(c - catCols[r - 1]) <= 1) continue;
             catCols[r] = c;
@@ -349,111 +549,24 @@ function generateRegionsPuzzle(levelNum) {
     return { N, catCols, colorGrid };
 }
 
-// --- إدارة الشاشات وزر الرجوع (يذهب للهوم أولاً قبل الخروج) ---
-let currentScreen = 'home'; // 'home' | 'levels' | 'game'
-let lastBackPress = 0;
-
-function navigateToScreen(screenName, pushHist = true) {
-    currentScreen = screenName;
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-
-    const topStats = document.getElementById('top-game-stats');
-    const topTitle = document.getElementById('top-home-title');
-    const backBtn = document.getElementById('back-btn');
-
-    if (screenName === 'home') {
-        document.getElementById('home-screen').classList.add('active');
-        topStats.style.display = 'none';
-        topTitle.style.display = 'block';
-        backBtn.textContent = '🐾';
-        updateHomeUI();
-    } else if (screenName === 'levels') {
-        document.getElementById('level-screen').classList.add('active');
-        topStats.style.display = 'none';
-        topTitle.style.display = 'block';
-        backBtn.textContent = '🏠';
-        renderLevelsGrid();
-    } else if (screenName === 'game') {
-        document.getElementById('game-screen').classList.add('active');
-        topStats.style.display = 'flex';
-        topTitle.style.display = 'none';
-        backBtn.textContent = '🏠';
-    }
-
-    if (pushHist) {
-        history.pushState({ screen: screenName }, '');
-    }
-}
-
-function handleBackNavigation() {
-    // 1. إذا كانت أي نافذة منبثقة مفتوحة، أغلقها أولاً
-    const openModal = document.querySelector('.modal.active');
-    if (openModal) {
-        openModal.classList.remove('active');
-        history.pushState({ screen: currentScreen }, '');
-        return;
-    }
-
-    // 2. إذا كنا داخل اللعب أو خريطة المستويات، ارجع إلى شاشة الهوم أولاً!
-    if (currentScreen !== 'home') {
-        navigateToScreen('home', false);
-        history.pushState({ screen: 'home' }, '');
-        return;
-    }
-
-    // 3. إذا كنا بالفعل في شاشة الهوم، أظهر تنبيه الخروج عند الضغط مرتين
-    const now = Date.now();
-    if (now - lastBackPress < 2000) {
-        if (navigator.app && navigator.app.exitApp) {
-            navigator.app.exitApp();
-        }
-    } else {
-        lastBackPress = now;
-        const toast = document.getElementById('exit-toast');
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 1800);
-        history.pushState({ screen: 'home' }, '');
-    }
-}
-
-window.addEventListener('popstate', () => {
-    handleBackNavigation();
-});
-
-document.getElementById('back-btn').addEventListener('click', () => {
-    if (currentScreen !== 'home') {
-        navigateToScreen('home');
-    } else {
-        openProfilePickerModal();
-    }
-});
-
-// --- تحديث واجهة الهوم ---
-function updateHomeUI() {
-    const prof = getActiveProfile();
-    if (!prof) return;
-    document.getElementById('home-profile-img').src = prof.photo;
-    document.getElementById('home-profile-name').textContent = prof.name;
-    document.getElementById('home-lvl-val').textContent = prof.currentLevel || 1;
-    document.getElementById('home-score-val').textContent = prof.score || 0;
-    document.getElementById('booster-cat-img').src = prof.photo;
-}
-
-// --- حالة اللعب والمؤثرات البصرية (Particles & Animations) ---
+// --- حالة اللعب ---
 let game = {
     level: 1,
     N: 9,
     catCols: [],
     colorGrid: [],
-    boardState: [], // 0 = empty, 1 = X, 2 = Cat/Photo
+    boardState: [], // 0 = empty, 1 = X, 2 = Character
     lives: 3
 };
 
 const boardEl = document.getElementById('regions-board');
-const silhouettesBar = document.getElementById('cat-silhouettes-bar');
+const gemsBar = document.getElementById('region-gems-bar');
 
 function startLevel(lvl) {
     const prof = getActiveProfile();
+    // التحقق من أن المستوى مفتوح لهذا البروفايل
+    if (lvl > prof.unlockedLevel) return;
+
     game.level = lvl;
     prof.currentLevel = lvl;
     saveProfilesToDB();
@@ -471,41 +584,38 @@ function startLevel(lvl) {
 
     updateBoostersUI();
     renderLivesUI();
-    renderSilhouettesBar();
+    renderGemsBar();
     renderBoard();
     navigateToScreen('game');
 }
 
-function renderSilhouettesBar() {
-    silhouettesBar.innerHTML = '';
+function renderGemsBar() {
+    gemsBar.innerHTML = '';
     for (let c = 0; c < game.N; c++) {
-        const hex = REGION_COLORS[c % REGION_COLORS.length];
         const div = document.createElement('div');
-        div.className = 'cat-sil';
+        div.className = 'region-gem';
         div.dataset.color = c;
-        div.innerHTML = `<svg viewBox="0 0 100 100">
-            <path d="M18,45 L14,12 L42,28 Q50,25 58,28 L86,12 L82,45 Q92,60 88,78 Q80,95 50,95 Q20,95 12,78 Q8,60 18,45 Z" fill="${hex}"/>
-        </svg>`;
-        silhouettesBar.appendChild(div);
+        div.style.backgroundColor = REGION_COLORS[c % REGION_COLORS.length];
+        gemsBar.appendChild(div);
     }
-    updateSilhouettesStatus();
+    updateGemsStatus();
 }
 
-function updateSilhouettesStatus() {
-    const foundColors = new Set();
+function updateGemsStatus() {
+    const found = new Set();
     for (let r = 0; r < game.N; r++) {
         for (let c = 0; c < game.N; c++) {
-            if (game.boardState[r][c] === 2) foundColors.add(game.colorGrid[r][c]);
+            if (game.boardState[r][c] === 2) found.add(game.colorGrid[r][c]);
         }
     }
-    silhouettesBar.querySelectorAll('.cat-sil').forEach(el => {
-        el.classList.toggle('found', foundColors.has(parseInt(el.dataset.color)));
+    gemsBar.querySelectorAll('.region-gem').forEach(el => {
+        el.classList.toggle('found', found.has(parseInt(el.dataset.color)));
     });
 }
 
 function renderLivesUI() {
-    document.querySelectorAll('#lives-bar .fish-icon').forEach((f, idx) => {
-        f.classList.toggle('lost', idx >= game.lives);
+    document.querySelectorAll('#lives-bar .heart-icon').forEach((h, idx) => {
+        h.classList.toggle('lost', idx >= game.lives);
     });
 }
 
@@ -516,7 +626,7 @@ function updateBoostersUI() {
     document.getElementById('badge-mouse').textContent = prof.boosters.mouse;
 }
 
-// --- نظام الضغطة الواحدة (وضع/إلغاء X) والضغطتين السريعتين (وضع القطة/الصورة) ---
+// --- نظام الضغطة الواحدة (X / إلغاء X) والضغطتين السريعتين (وضع الشخصية) ---
 let tapTimer = null;
 let lastTappedCoords = null;
 let lastTapTime = 0;
@@ -526,14 +636,12 @@ function onTilePointerDown(r, c) {
     const isSameCell = lastTappedCoords && lastTappedCoords.r === r && lastTappedCoords.c === c;
 
     if (isSameCell && (now - lastTapTime) < 280) {
-        // ضغطتان سريعتان (Double Tap) -> وضع القطة / صورة الابن مباشرة!
         clearTimeout(tapTimer);
         tapTimer = null;
         lastTappedCoords = null;
         lastTapTime = 0;
-        placeCatAt(r, c);
+        placeCharacterAt(r, c);
     } else {
-        // ضغطة واحدة (Single Tap) -> تبديل علامة X (وضع X أو إلغاء X)
         lastTappedCoords = { r, c };
         lastTapTime = now;
         clearTimeout(tapTimer);
@@ -549,37 +657,33 @@ function toggleSingleTapX(r, c) {
     const tileEl = boardEl.querySelector(`.tile[data-r="${r}"][data-c="${c}"]`);
 
     if (cur === 0) {
-        // المربع فارغ -> ضع علامة X مع أنيميشن
         game.boardState[r][c] = 1;
         if (tileEl) tileEl.innerHTML = `<span class="tile-x">✕</span>`;
     } else if (cur === 1) {
-        // المربع فيه X -> الضغطة الواحدة الثانية تلغي علامة X بأنيميشن ناعم!
         game.boardState[r][c] = 0;
         const xEl = tileEl ? tileEl.querySelector('.tile-x') : null;
         if (xEl) {
             xEl.classList.add('removing');
-            setTimeout(() => { if (game.boardState[r][c] === 0) tileEl.innerHTML = ''; }, 170);
+            setTimeout(() => { if (game.boardState[r][c] === 0) tileEl.innerHTML = ''; }, 165);
         } else if (tileEl) {
             tileEl.innerHTML = '';
         }
     } else if (cur === 2) {
-        // إذا كان فيه قطة وضغط ضغطة واحدة -> يزيل القطة
         game.boardState[r][c] = 0;
         const imgEl = tileEl ? tileEl.querySelector('.tile-avatar') : null;
         if (imgEl) {
             imgEl.classList.add('removing');
             setTimeout(() => {
                 if (game.boardState[r][c] === 0) tileEl.innerHTML = '';
-                updateSilhouettesStatus();
-            }, 170);
+                updateGemsStatus();
+            }, 165);
         }
     }
 }
 
-// توليد شرارات احتفالية عند وضع الصورة الصحيحة
 function spawnCelebrationParticles(tileEl) {
     if (!tileEl) return;
-    const emojis = ['✨', '⭐', '💖', '🐾', '🎉'];
+    const emojis = ['✨', '🌟', '💖', '🎉', '👑'];
     for (let i = 0; i < 6; i++) {
         const span = document.createElement('span');
         span.className = 'fx-particle';
@@ -593,7 +697,6 @@ function spawnCelebrationParticles(tileEl) {
     }
 }
 
-// توليد أنيميشن الخطأ
 function spawnWrongAnimation(tileEl) {
     if (!tileEl) return;
     tileEl.classList.remove('error-shake');
@@ -602,7 +705,7 @@ function spawnWrongAnimation(tileEl) {
 
     const badge = document.createElement('div');
     badge.className = 'fx-wrong-badge';
-    badge.textContent = '❌ -1 🐟';
+    badge.textContent = '❌ -1 💖';
     tileEl.appendChild(badge);
 
     setTimeout(() => {
@@ -674,10 +777,9 @@ function autoFillXsAround(r, c) {
     }
 }
 
-function placeCatAt(r, c) {
+function placeCharacterAt(r, c) {
     const tileEl = boardEl.querySelector(`.tile[data-r="${r}"][data-c="${c}"]`);
     if (hasRuleViolation(r, c)) {
-        // خطأ: إذا كان المربع فيه X نتركه أو نفرغه ونشغل أنيميشن وصوت الخطأ
         game.boardState[r][c] = 1;
         if (tileEl) tileEl.innerHTML = `<span class="tile-x">✕</span>`;
         sound.playWrong();
@@ -693,7 +795,6 @@ function placeCatAt(r, c) {
         return;
     }
 
-    // إجابة صحيحة!
     const prof = getActiveProfile();
     game.boardState[r][c] = 2;
     if (tileEl) {
@@ -713,7 +814,7 @@ function placeCatAt(r, c) {
     document.getElementById('score-display').textContent = prof.score;
     saveProfilesToDB();
 
-    updateSilhouettesStatus();
+    updateGemsStatus();
     checkVictory();
 }
 
@@ -724,22 +825,32 @@ function checkVictory() {
     }
     if (count === game.N) {
         const prof = getActiveProfile();
-        prof.completed[game.level] = true;
+        const earnedStars = game.lives === 3 ? 3 : game.lives === 2 ? 2 : 1;
+        prof.stars[game.level] = Math.max(prof.stars[game.level] || 0, earnedStars);
         prof.score = (prof.score || 0) + 50;
-        if (game.level < TOTAL_LEVELS) prof.currentLevel = game.level + 1;
+
+        // فتح المستوى التالي لهذا البروفايل إذا أنهى أعلى مستوى مفتوح لديه!
+        if (game.level === prof.unlockedLevel && prof.unlockedLevel < TOTAL_LEVELS) {
+            prof.unlockedLevel++;
+        }
+        if (game.level < TOTAL_LEVELS) {
+            prof.currentLevel = game.level + 1;
+        }
         saveProfilesToDB();
 
+        launchConfetti();
         setTimeout(() => {
             sound.playWin();
             document.getElementById('win-level-num').textContent = game.level;
+            document.getElementById('win-stars-row').textContent = '⭐'.repeat(earnedStars);
             document.getElementById('win-score-val').textContent = prof.score;
             document.getElementById('win-modal').classList.add('active');
-        }, 450);
+        }, 400);
     }
 }
 
-// --- المساعدات الثلاث (Boosters) ---
-document.getElementById('booster-cat').addEventListener('click', () => {
+// --- المساعدات الثلاث (العصا السحرية، البوصلة، البرق) ---
+document.getElementById('booster-wand').addEventListener('click', () => {
     const prof = getActiveProfile();
     if (prof.boosters.cat <= 0) return;
     const unplaced = [];
@@ -752,10 +863,10 @@ document.getElementById('booster-cat').addEventListener('click', () => {
     updateBoostersUI();
     saveProfilesToDB();
     const [r, c] = unplaced[Math.floor(Math.random() * unplaced.length)];
-    placeCatAt(r, c);
+    placeCharacterAt(r, c);
 });
 
-document.getElementById('booster-hint').addEventListener('click', () => {
+document.getElementById('booster-compass').addEventListener('click', () => {
     const prof = getActiveProfile();
     if (prof.boosters.hint <= 0) return;
     for (let r = 0; r < game.N; r++) {
@@ -774,7 +885,7 @@ document.getElementById('booster-hint').addEventListener('click', () => {
     }
 });
 
-document.getElementById('booster-mouse').addEventListener('click', () => {
+document.getElementById('booster-zap').addEventListener('click', () => {
     const prof = getActiveProfile();
     if (prof.boosters.mouse <= 0) return;
     const wrongEmpty = [];
@@ -795,38 +906,176 @@ document.getElementById('booster-mouse').addEventListener('click', () => {
     });
 });
 
-// --- خريطة المستويات وأزرار الهوم ---
+// --- خريطة المستويات (المستويات مقفولة وتفتح تدريجياً لكل بروفايل) ---
 function renderLevelsGrid() {
     const prof = getActiveProfile();
     const grid = document.getElementById('levels-grid');
     grid.innerHTML = '';
+
     for (let i = 1; i <= TOTAL_LEVELS; i++) {
         const btn = document.createElement('button');
-        const isDone = !!(prof.completed && prof.completed[i]);
-        btn.className = `lvl-btn ${isDone ? 'completed' : ''} ${i === prof.currentLevel ? 'current' : ''}`;
-        const sz = getGridSizeForLevel(i);
-        btn.innerHTML = `<div>${i}</div><div style="font-size:0.7rem">${isDone ? '🐾' : `${sz}×${sz}`}</div>`;
-        btn.addEventListener('click', () => startLevel(i));
+        const isUnlocked = i <= prof.unlockedLevel;
+        const stars = (prof.stars && prof.stars[i]) || 0;
+
+        btn.className = `lvl-btn ${!isUnlocked ? 'locked' : stars > 0 ? 'completed' : ''} ${i === prof.unlockedLevel ? 'current' : ''}`;
+        if (isUnlocked) {
+            btn.innerHTML = `
+                <div style="font-size:1.05rem;">${i}</div>
+                <div style="font-size:0.65rem;">${stars > 0 ? '⭐'.repeat(stars) : `${getGridSizeForLevel(i)}×${getGridSizeForLevel(i)}`}</div>
+            `;
+            btn.addEventListener('click', () => startLevel(i));
+        } else {
+            btn.innerHTML = `
+                <div style="font-size:1rem;">🔒</div>
+                <div style="font-size:0.7rem;">${i}</div>
+            `;
+        }
         grid.appendChild(btn);
     }
 }
 
+// --- غرفة الكؤوس والأوسمة (Trophies Room) ---
+function renderTrophiesGrid() {
+    const prof = getActiveProfile();
+    const grid = document.getElementById('trophies-grid');
+    grid.innerHTML = '';
+
+    TROPHIES_LIST.forEach(t => {
+        const isUnlocked = prof.unlockedLevel >= t.reqLvl;
+        const card = document.createElement('div');
+        card.className = `trophy-card ${isUnlocked ? 'unlocked' : 'locked'}`;
+        const title = appPrefs.lang === 'ar' ? t.ar : t.en;
+        const desc = appPrefs.lang === 'ar' ? t.descAr : t.descEn;
+        card.innerHTML = `
+            <div class="trophy-icon">${isUnlocked ? t.icon : '🔒'}</div>
+            <div class="trophy-title">${title}</div>
+            <div class="trophy-desc">${desc}</div>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+// --- عجلة الهدايا المبهجة (Lucky Wheel) ---
+let wheelSpinning = false;
+let wheelDeg = 0;
+
+document.getElementById('open-wheel-btn').addEventListener('click', () => {
+    document.getElementById('wheel-prize-msg').textContent = '';
+    document.getElementById('wheel-modal').classList.add('active');
+});
+document.getElementById('close-wheel-btn').addEventListener('click', () => {
+    document.getElementById('wheel-modal').classList.remove('active');
+});
+
+document.getElementById('spin-wheel-btn').addEventListener('click', () => {
+    if (wheelSpinning) return;
+    wheelSpinning = true;
+    document.getElementById('wheel-prize-msg').textContent = '...';
+
+    const prizes = [
+        { labelAr: '🎉 ربحت +2 عصا سحرية 🪄!', labelEn: '🎉 Won +2 Magic Wands 🪄!', apply: p => p.boosters.cat += 2 },
+        { labelAr: '🎉 ربحت +3 بوصلة ذكية 🧭!', labelEn: '🎉 Won +3 Smart Compasses 🧭!', apply: p => p.boosters.hint += 3 },
+        { labelAr: '🎉 ربحت +2 برق كاشف ⚡!', labelEn: '🎉 Won +2 Lightning Zaps ⚡!', apply: p => p.boosters.mouse += 2 },
+        { labelAr: '🎉 ربحت +100 نقطة ذهبية ⭐!', labelEn: '🎉 Won +100 Bonus Score ⭐!', apply: p => p.score = (p.score || 0) + 100 },
+        { labelAr: '🎁 جائزة كبرى! +1 من كل المساعدات!', labelEn: '🎁 Jackpot! +1 of ALL Power-ups!', apply: p => { p.boosters.cat++; p.boosters.hint++; p.boosters.mouse++; } }
+    ];
+
+    const pick = prizes[Math.floor(Math.random() * prizes.length)];
+    wheelDeg += 1440 + Math.floor(Math.random() * 360);
+    document.getElementById('lucky-wheel-disc').style.transform = `rotate(${wheelDeg}deg)`;
+
+    setTimeout(async () => {
+        const prof = getActiveProfile();
+        pick.apply(prof);
+        await saveProfilesToDB();
+        updateHomeUI();
+        sound.playWin();
+        launchConfetti();
+        document.getElementById('wheel-prize-msg').textContent = appPrefs.lang === 'ar' ? pick.labelAr : pick.labelEn;
+        wheelSpinning = false;
+    }, 3250);
+});
+
+// --- الطريقة السرية للـ Cheats (5 ضغطات سريعة على لوجو MawMaw أو عنوان الإعدادات) ---
+let secretTapCount = 0;
+let secretTapTimer = null;
+
+function handleSecretTriggerTap() {
+    secretTapCount++;
+    clearTimeout(secretTapTimer);
+    if (secretTapCount >= 5) {
+        secretTapCount = 0;
+        openSecretCheatModal();
+    } else {
+        secretTapTimer = setTimeout(() => { secretTapCount = 0; }, 1400);
+    }
+}
+
+document.getElementById('top-logo-wrap').addEventListener('click', handleSecretTriggerTap);
+document.getElementById('settings-secret-trigger').addEventListener('click', handleSecretTriggerTap);
+
+function openSecretCheatModal() {
+    const prof = getActiveProfile();
+    document.getElementById('cheat-prof-name').textContent = prof.name;
+    document.getElementById('cheat-status-msg').textContent = '';
+    document.getElementById('cheat-modal').classList.add('active');
+}
+
+document.getElementById('close-cheat-btn').addEventListener('click', () => {
+    document.getElementById('cheat-modal').classList.remove('active');
+});
+
+document.getElementById('cheat-unlock-all-btn').addEventListener('click', async () => {
+    const prof = getActiveProfile();
+    prof.unlockedLevel = TOTAL_LEVELS;
+    await saveProfilesToDB();
+    updateHomeUI();
+    if (currentScreen === 'levels') renderLevelsGrid();
+    if (currentScreen === 'trophies') renderTrophiesGrid();
+    sound.playWin();
+    document.getElementById('cheat-status-msg').textContent = '✅ تم فتح جميع الـ 120 مستوى بنجاح!';
+});
+
+document.getElementById('cheat-add-boosters-btn').addEventListener('click', async () => {
+    const prof = getActiveProfile();
+    prof.boosters.cat += 50;
+    prof.boosters.hint += 50;
+    prof.boosters.mouse += 50;
+    await saveProfilesToDB();
+    updateBoostersUI();
+    sound.playCorrect();
+    document.getElementById('cheat-status-msg').textContent = '✅ تمت إضافة +50 لكل المساعدات!';
+});
+
+document.getElementById('cheat-add-score-btn').addEventListener('click', async () => {
+    const prof = getActiveProfile();
+    prof.score = (prof.score || 0) + 1000;
+    prof.unlockedLevel = TOTAL_LEVELS;
+    await saveProfilesToDB();
+    updateHomeUI();
+    sound.playWin();
+    document.getElementById('cheat-status-msg').textContent = '✅ تمت إضافة 1000 نقطة وفتح كل الكؤوس!';
+});
+
+document.getElementById('cheat-jump-btn').addEventListener('click', async () => {
+    const val = parseInt(document.getElementById('cheat-level-input').value);
+    if (!val || val < 1 || val > TOTAL_LEVELS) return;
+    const prof = getActiveProfile();
+    if (val > prof.unlockedLevel) prof.unlockedLevel = val;
+    await saveProfilesToDB();
+    document.getElementById('cheat-modal').classList.remove('active');
+    startLevel(val);
+});
+
+// --- أزرار التنقل في الشاشة الرئيسية ---
 document.getElementById('play-now-btn').addEventListener('click', () => {
     const prof = getActiveProfile();
-    startLevel(prof.currentLevel || 1);
+    startLevel(prof.unlockedLevel || 1);
 });
-
-document.getElementById('open-levels-btn').addEventListener('click', () => {
-    navigateToScreen('levels');
-});
-
-document.getElementById('open-settings-home-btn').addEventListener('click', () => {
-    openSettingsModal();
-});
-
-document.getElementById('quick-swap-btn').addEventListener('click', () => {
-    openProfilePickerModal();
-});
+document.getElementById('open-levels-btn').addEventListener('click', () => navigateToScreen('levels'));
+document.getElementById('open-trophies-btn').addEventListener('click', () => navigateToScreen('trophies'));
+document.getElementById('open-settings-home-btn').addEventListener('click', () => openSettingsModal());
+document.getElementById('quick-swap-btn').addEventListener('click', () => openProfilePickerModal());
 
 document.getElementById('next-level-btn').addEventListener('click', () => {
     document.getElementById('win-modal').classList.remove('active');
@@ -839,29 +1088,31 @@ document.getElementById('retry-level-btn').addEventListener('click', () => {
     startLevel(game.level);
 });
 
-// --- نافذة اختيار البروفايل عند بدء اللعبة أو التبديل السريع ---
+// --- نافذة اختيار البروفايل عند الفتح ---
 function openProfilePickerModal() {
     const grid = document.getElementById('startup-profiles-grid');
     grid.innerHTML = '';
     profiles.forEach(p => {
+        ensureProfileFields(p);
         const card = document.createElement('div');
         card.className = `picker-card ${p.id === appPrefs.activeProfileId ? 'active' : ''}`;
         card.innerHTML = `
             <img src="${p.photo}" alt="${p.name}">
             <strong>${p.name}</strong>
-            <span style="font-size:0.72rem; color:#8c6d62;">${I18N[appPrefs.lang].level} ${p.currentLevel || 1}</span>
+            <span style="font-size:0.72rem; color:#636e72;">🔓 ${I18N[appPrefs.lang].level} ${p.unlockedLevel}</span>
         `;
         card.addEventListener('click', () => {
             appPrefs.activeProfileId = p.id;
             saveProfilesToDB();
             updateHomeUI();
-            if (currentScreen === 'game') startLevel(p.currentLevel || 1);
+            if (currentScreen === 'game') startLevel(p.unlockedLevel || 1);
+            if (currentScreen === 'levels') renderLevelsGrid();
+            if (currentScreen === 'trophies') renderTrophiesGrid();
             document.getElementById('profile-picker-modal').classList.remove('active');
         });
         grid.appendChild(card);
     });
     document.getElementById('profile-picker-modal').classList.add('active');
-    history.pushState({ modal: 'picker' }, '');
 }
 
 document.getElementById('add-profile-from-picker-btn').addEventListener('click', () => {
@@ -905,8 +1156,9 @@ document.getElementById('save-new-profile-btn').addEventListener('click', async 
         correctSounds: {},
         wrongSounds: {},
         currentLevel: 1,
+        unlockedLevel: 1, // يبدأ من المستوى 1 فقط والباقي مقفول
+        stars: {},
         score: 0,
-        completed: {},
         boosters: { cat: 7, hint: 9, mouse: 2 }
     };
     profiles.push(newProf);
@@ -918,7 +1170,6 @@ document.getElementById('save-new-profile-btn').addEventListener('click', async 
     await saveProfilesToDB();
     renderSettingsModalUI();
     updateHomeUI();
-    if (currentScreen === 'game') renderBoard();
 });
 
 function renderSettingsModalUI() {
@@ -932,6 +1183,7 @@ function renderSettingsModalUI() {
     listEl.innerHTML = '';
 
     profiles.forEach(p => {
+        ensureProfileFields(p);
         const isCurrent = p.id === appPrefs.activeProfileId;
         const item = document.createElement('div');
         item.className = `prof-item ${isCurrent ? 'active' : ''}`;
@@ -942,7 +1194,7 @@ function renderSettingsModalUI() {
             <img src="${p.photo}" alt="${p.name}">
             <div>
                 <strong>${p.name}</strong>
-                <div style="font-size:0.72rem; color:#8c6d62;">${dict.level}: ${p.currentLevel || 1} | ${dict.score}: ${p.score || 0}</div>
+                <div style="font-size:0.72rem; color:#636e72;">🔓 ${dict.level}: ${p.unlockedLevel} | ⭐ ${p.score || 0}</div>
             </div>
         `;
 
@@ -957,7 +1209,8 @@ function renderSettingsModalUI() {
             await saveProfilesToDB();
             renderSettingsModalUI();
             updateHomeUI();
-            if (currentScreen === 'game') startLevel(p.currentLevel || 1);
+            if (currentScreen === 'levels') renderLevelsGrid();
+            if (currentScreen === 'trophies') renderTrophiesGrid();
         };
         actions.appendChild(selectBtn);
 
@@ -967,9 +1220,7 @@ function renderSettingsModalUI() {
             delBtn.textContent = '🗑️';
             delBtn.onclick = async () => {
                 profiles = profiles.filter(x => x.id !== p.id);
-                if (appPrefs.activeProfileId === p.id) {
-                    appPrefs.activeProfileId = profiles[0].id;
-                }
+                if (appPrefs.activeProfileId === p.id) appPrefs.activeProfileId = profiles[0].id;
                 await saveProfilesToDB();
                 renderSettingsModalUI();
                 updateHomeUI();
@@ -1046,7 +1297,6 @@ function renderAudioSlotsUI(containerId, soundMap, labelText) {
 function openSettingsModal() {
     renderSettingsModalUI();
     document.getElementById('settings-modal').classList.add('active');
-    history.pushState({ modal: 'settings' }, '');
 }
 
 document.getElementById('settings-btn').addEventListener('click', openSettingsModal);
@@ -1073,11 +1323,11 @@ document.getElementById('lang-en-btn').addEventListener('click', () => {
 
 document.getElementById('auto-x-toggle').addEventListener('change', (e) => {
     appPrefs.autoX = e.target.checked;
-    localStorage.setItem('meow_autox', appPrefs.autoX);
+    localStorage.setItem('mawmaw_autox', appPrefs.autoX);
 });
 document.getElementById('sound-toggle').addEventListener('change', (e) => {
     appPrefs.soundEnabled = e.target.checked;
-    localStorage.setItem('meow_sound', appPrefs.soundEnabled);
+    localStorage.setItem('mawmaw_sound', appPrefs.soundEnabled);
 });
 
 // --- تهيئة اللعبة عند الفتح ---
@@ -1085,9 +1335,9 @@ async function initApp() {
     await db.init();
     const savedProfs = await db.get('profiles_list');
     if (savedProfs && Array.isArray(savedProfs) && savedProfs.length > 0) {
-        profiles = savedProfs;
+        profiles = savedProfs.map(ensureProfileFields);
     } else {
-        profiles = [createDefaultCatProfile()];
+        profiles = [createDefaultProfile()];
         await saveProfilesToDB();
     }
 
@@ -1095,9 +1345,9 @@ async function initApp() {
     document.getElementById('sound-toggle').checked = appPrefs.soundEnabled;
 
     applyLanguage(appPrefs.lang);
-    navigateToScreen('home', true);
+    navigateToScreen('home');
 
-    // إذا كان هناك بروفايلات أطفال مضافة، اطلب اختيار البروفايل فور فتح اللعبة!
+    // إذا كان هناك بروفايلات أطفال مضافة، اطلب اختيار البروفايل فور فتح اللعبة
     if (profiles.length > 1) {
         openProfilePickerModal();
     }

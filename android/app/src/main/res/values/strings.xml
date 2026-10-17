@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Meowdoku</string>
-    <string name="title_activity_main">Meowdoku</string>
+    <string name="app_name">MawMaw</string>
+    <string name="title_activity_main">MawMaw</string>
     <string name="package_name">com.custom.meowdoku</string>
     <string name="custom_url_scheme">com.custom.meowdoku</string>
 </resources>

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 100">
+  <defs>
+    <linearGradient id="badgeBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6c5ce7"/>
+      <stop offset="50%" stop-color="#a29bfe"/>
+      <stop offset="100%" stop-color="#00cec9"/>
+    </linearGradient>
+    <linearGradient id="txtGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#ffeaa7"/>
+    </linearGradient>
+  </defs>
+  <rect x="6" y="8" width="348" height="84" rx="42" fill="url(#badgeBg)" stroke="#ffffff" stroke-width="4"/>
+  <!-- Puzzle Tiles Decoration -->
+  <rect x="24" y="24" width="24" height="24" rx="6" fill="#ff7675" transform="rotate(-12 36 36)" stroke="#fff" stroke-width="2"/>
+  <rect x="46" y="48" width="24" height="24" rx="6" fill="#fdcb6e" transform="rotate(10 58 60)" stroke="#fff" stroke-width="2"/>
+  <rect x="295" y="24" width="24" height="24" rx="6" fill="#55efc4" transform="rotate(14 307 36)" stroke="#fff" stroke-width="2"/>
+  <rect x="278" y="50" width="22" height="22" rx="6" fill="#fd79a8" transform="rotate(-8 289 61)" stroke="#fff" stroke-width="2"/>
+  <!-- Crown & Stars -->
+  <text x="84" y="42" font-size="22">👑</text>
+  <text x="255" y="40" font-size="20">✨</text>
+  <!-- MawMaw Title -->
+  <text x="180" y="64" font-family="'Segoe UI', Arial, sans-serif" font-size="42" font-weight="900" fill="url(#txtGrad)" stroke="#2d3436" stroke-width="2" text-anchor="middle" letter-spacing="1.5">MawMaw</text>
+</svg>

@@ -3,148 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#fcf7f2">
-    <title>Meowdoku</title>
+    <meta name="theme-color" content="#6c5ce7">
+    <title>MawMaw - ماوماو</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Confetti Canvas -->
+    <canvas id="confetti-canvas"></canvas>
+
     <div class="app-container">
         <!-- Top Header -->
         <header class="top-bar">
-            <button id="back-btn" class="circle-icon-btn" title="Back">🏠</button>
+            <button id="nav-back-btn" class="nav-glass-btn" title="Back">👥</button>
+
+            <!-- Secret Cheat Trigger: Tap Logo 5 times quickly! -->
+            <div id="top-logo-wrap" class="top-logo-wrap" title="MawMaw">
+                <img src="assets/mawmaw_logo.svg" alt="MawMaw Logo" class="header-logo-img">
+            </div>
+
             <div class="top-stats" id="top-game-stats" style="display:none;">
-                <div class="stat-col">
-                    <span class="stat-label" data-i18n="level">Level</span>
+                <div class="stat-pill">
+                    <span class="stat-label" data-i18n="level">المستوى</span>
                     <span id="level-num-display" class="stat-val">1</span>
                 </div>
-                <div class="stat-col">
-                    <span class="stat-label" data-i18n="score">Score</span>
+                <div class="stat-pill">
+                    <span class="stat-label" data-i18n="score">النقاط</span>
                     <span id="score-display" class="stat-val">0</span>
                 </div>
             </div>
-            <div id="top-home-title" class="top-brand-title">Meowdoku 🐾</div>
-            <button id="settings-btn" class="circle-icon-btn" title="Settings">⚙️</button>
+
+            <button id="settings-btn" class="nav-glass-btn" title="Settings">⚙️</button>
         </header>
 
         <!-- 1. HOME SCREEN -->
         <main id="home-screen" class="screen active">
-            <div class="home-hero-card">
-                <div class="active-profile-badge" id="home-profile-card">
-                    <img id="home-profile-img" src="assets/cats/main_cat.svg" alt="Avatar" class="home-avatar">
+            <div class="home-card">
+                <!-- Active Profile Banner -->
+                <div class="hero-profile-strip">
+                    <div class="avatar-ring">
+                        <img id="home-profile-img" src="assets/cats/main_cat.svg" alt="Avatar" class="home-avatar">
+                    </div>
                     <div class="home-profile-info">
                         <span class="welcome-sub" data-i18n="welcomePlayer">مرحباً بالبطل:</span>
-                        <h2 id="home-profile-name">القطة اللطيفة</h2>
+                        <h2 id="home-profile-name">ماوماو</h2>
                     </div>
-                    <button id="quick-swap-btn" class="swap-pill-btn" data-i18n="changeProfile">تبديل 👥</button>
+                    <button id="quick-swap-btn" class="swap-btn" data-i18n="changeProfile">تبديل 👥</button>
                 </div>
 
-                <div class="home-stats-row">
-                    <div class="home-stat-box">
-                        <span data-i18n="currentLevel">المستوى الحالي</span>
-                        <strong id="home-lvl-val">1</strong>
+                <!-- Progress Stats -->
+                <div class="home-stats-grid">
+                    <div class="stat-card-box">
+                        <span class="sc-icon">🔓</span>
+                        <span class="sc-title" data-i18n="unlockedLvl">أعلى مستوى مفتوح</span>
+                        <strong id="home-unlocked-val">1 / 120</strong>
                     </div>
-                    <div class="home-stat-box">
-                        <span data-i18n="totalScore">مجموع النقاط</span>
+                    <div class="stat-card-box">
+                        <span class="sc-icon">⭐</span>
+                        <span class="sc-title" data-i18n="totalScore">مجموع النقاط</span>
                         <strong id="home-score-val">0</strong>
                     </div>
                 </div>
 
-                <div class="home-actions">
-                    <button id="play-now-btn" class="big-play-btn">
-                        ▶️ <span data-i18n="playNow">العب الآن</span>
+                <!-- Main Navigation Buttons -->
+                <div class="home-menu-btns">
+                    <button id="play-now-btn" class="btn-play-main">
+                        🚀 <span data-i18n="playNow">العب الآن</span> (<span data-i18n="level">المستوى</span> <span id="play-btn-lvl">1</span>)
                     </button>
-                    <button id="open-levels-btn" class="home-sec-btn">
-                        🗺️ <span data-i18n="levelsMap">خريطة المستويات (1 - 120)</span>
-                    </button>
-                    <button id="open-settings-home-btn" class="home-sec-btn">
-                        ⚙️ <span data-i18n="settingsAndProfiles">الإعدادات والبروفايلات</span>
-                    </button>
+
+                    <div class="home-sub-grid">
+                        <button id="open-levels-btn" class="btn-sub-card mint">
+                            <span class="sub-icon">🗺️</span>
+                            <span data-i18n="levelsMap">خريطة المستويات</span>
+                        </button>
+                        <button id="open-wheel-btn" class="btn-sub-card sunny">
+                            <span class="sub-icon">🎡</span>
+                            <span data-i18n="luckyWheel">عجلة الهدايا</span>
+                        </button>
+                        <button id="open-trophies-btn" class="btn-sub-card coral">
+                            <span class="sub-icon">🏆</span>
+                            <span data-i18n="trophiesRoom">غرفة الكؤوس</span>
+                        </button>
+                        <button id="open-settings-home-btn" class="btn-sub-card purple">
+                            <span class="sub-icon">⚙️</span>
+                            <span data-i18n="settingsAndProfiles">البروفايلات والإعدادات</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </main>
 
-        <!-- 2. LEVELS MAP SCREEN -->
+        <!-- 2. LEVELS MAP SCREEN (Locked Progression per Profile) -->
         <main id="level-screen" class="screen">
-            <div class="levels-header-card">
-                <h2 data-i18n="levelsMap">🐾 خريطة المستويات (1 - 120)</h2>
-                <p data-i18n="rulesSummary">ضع قطة أو صورة واحدة في كل منطقة لونية، وفي كل صف وعمود، بدون تلامس!</p>
+            <div class="section-banner">
+                <h2 data-i18n="levelsMapTitle">🗺️ مراحل مغامرة MawMaw</h2>
+                <p data-i18n="levelsMapSub">افتح المراحل واحدة تلو الأخرى واجمع النجوم الثلاث لكل مرحلة!</p>
             </div>
             <div id="levels-grid" class="levels-grid"></div>
         </main>
 
-        <!-- 3. GAME SCREEN -->
+        <!-- 3. TROPHIES & STICKERS ROOM SCREEN (New Feature!) -->
+        <main id="trophies-screen" class="screen">
+            <div class="section-banner">
+                <h2 data-i18n="trophiesTitle">🏆 غرفة الكؤوس والأوسمة</h2>
+                <p data-i18n="trophiesSub">العب واربح المستويات لتفتح أوسمة الأبطال الخاصة ببروفايلك!</p>
+            </div>
+            <div id="trophies-grid" class="trophies-grid"></div>
+        </main>
+
+        <!-- 4. GAME SCREEN (Distinct MawMaw Arcade Look) -->
         <main id="game-screen" class="screen">
-            <!-- Cat Silhouettes Bar + 3 Golden Fishes -->
-            <div class="status-strip">
-                <div id="cat-silhouettes-bar" class="silhouettes-pill"></div>
-                <div id="lives-bar" class="lives-pill">
-                    <span class="fish-icon">🐟</span>
-                    <span class="fish-icon">🐟</span>
-                    <span class="fish-icon">🐟</span>
+            <!-- Region Progress + 3 Energy Hearts -->
+            <div class="game-hud-bar" dir="ltr">
+                <div id="region-gems-bar" class="gems-pill"></div>
+                <div id="lives-bar" class="hearts-pill">
+                    <span class="heart-icon">💖</span>
+                    <span class="heart-icon">💖</span>
+                    <span class="heart-icon">💖</span>
                 </div>
             </div>
 
-            <!-- 3 Visual Rules Cards -->
-            <div class="rules-strip" dir="ltr">
-                <div class="rule-card">
-                    <div class="mini-grid">
-                        <span>✕</span><span>✕</span><span>✕</span>
-                        <span>✕</span><span class="mini-cat">🐱</span><span></span>
-                        <span>✕</span><span></span><span></span>
-                    </div>
-                    <div class="rule-text" data-i18n="rule1">1 Cat per<br>color</div>
-                </div>
-                <div class="rule-card">
-                    <div class="mini-grid">
-                        <span>✕</span><span class="mini-cat">🐱</span><span>✕</span>
-                        <span></span><span>✕</span><span></span>
-                        <span></span><span>✕</span><span></span>
-                    </div>
-                    <div class="rule-text" data-i18n="rule2">1 Cat per<br>column and<br>row</div>
-                </div>
-                <div class="rule-card">
-                    <div class="mini-grid">
-                        <span>✕</span><span>✕</span><span>✕</span>
-                        <span>✕</span><span class="mini-cat">🐱</span><span>✕</span>
-                        <span>✕</span><span>✕</span><span>✕</span>
-                    </div>
-                    <div class="rule-text" data-i18n="rule3">Cats cannot<br>touch</div>
-                </div>
+            <!-- Distinct MawMaw Rules Pills -->
+            <div class="mawmaw-rules-bar">
+                <div class="m-rule-chip">🎨 <span data-i18n="mRule1">واحد بكل لون</span></div>
+                <div class="m-rule-chip">📏 <span data-i18n="mRule2">واحد بكل صف وعمود</span></div>
+                <div class="m-rule-chip">🚫 <span data-i18n="mRule3">ممنوع التلامس</span></div>
             </div>
 
-            <!-- Color Regions Board -->
-            <div class="board-card">
+            <!-- 3D Tactile Puzzle Board -->
+            <div class="board-frame">
                 <div id="regions-board" class="regions-board" dir="ltr"></div>
             </div>
 
-            <!-- Tap instruction hint -->
-            <div class="tap-guide" data-i18n="tapGuide">
-                ضغطة واحدة = وضع/إلغاء <strong>✕</strong> &nbsp;|&nbsp; ضغطتان سريعتان = <strong>وضع القطة / الصورة</strong>
+            <!-- Tap Guide -->
+            <div class="tap-hint-pill" data-i18n="tapGuide">
+                ضغطة واحدة = وضع/إلغاء <strong>✕</strong> &nbsp;|&nbsp; ضغطتان سريعتان = <strong>وضع الشخصية</strong>
             </div>
 
-            <!-- 3 Bottom Boosters -->
-            <div class="boosters-bar" dir="ltr">
-                <button id="booster-cat" class="booster-btn">
-                    <img id="booster-cat-img" src="assets/cats/main_cat.svg" alt="Cat" class="booster-img">
-                    <span id="badge-cat" class="booster-badge">7</span>
+            <!-- Distinct MawMaw Power-ups -->
+            <div class="powerups-dock" dir="ltr">
+                <button id="booster-wand" class="power-btn wand-theme">
+                    <img id="booster-cat-img" src="assets/cats/main_cat.svg" alt="Wand" class="power-avatar">
+                    <span class="power-mini-icon">🪄</span>
+                    <span id="badge-cat" class="power-count">7</span>
                 </button>
-                <button id="booster-hint" class="booster-btn">
-                    <span class="booster-emoji">💡</span>
-                    <span id="badge-hint" class="booster-badge">9</span>
+                <button id="booster-compass" class="power-btn compass-theme">
+                    <span class="power-emoji">🧭</span>
+                    <span id="badge-hint" class="power-count">9</span>
                 </button>
-                <button id="booster-mouse" class="booster-btn">
-                    <span class="booster-emoji">🐭</span>
-                    <span id="badge-mouse" class="booster-badge">2</span>
+                <button id="booster-zap" class="power-btn zap-theme">
+                    <span class="power-emoji">⚡</span>
+                    <span id="badge-mouse" class="power-count">2</span>
                 </button>
             </div>
         </main>
 
-        <!-- STARTUP / SWAP PROFILE PICKER MODAL -->
+        <!-- LUCKY WHEEL MODAL (New Feature!) -->
+        <div id="wheel-modal" class="modal">
+            <div class="modal-content wheel-box">
+                <div class="modal-header">
+                    <h2 data-i18n="luckyWheelTitle">🎡 عجلة هدايا MawMaw</h2>
+                    <button id="close-wheel-btn" class="close-x">✖</button>
+                </div>
+                <p class="modal-sub-text" data-i18n="luckyWheelSub">لف العجلة واربح مساعدات ونقاط مجانية لبروفايلك!</p>
+
+                <div class="wheel-stage">
+                    <div class="wheel-pointer">🔻</div>
+                    <div id="lucky-wheel-disc" class="lucky-wheel-disc">
+                        <div class="wheel-label" style="--rot: 30deg;">🪄 +2</div>
+                        <div class="wheel-label" style="--rot: 90deg;">🧭 +3</div>
+                        <div class="wheel-label" style="--rot: 150deg;">⚡ +2</div>
+                        <div class="wheel-label" style="--rot: 210deg;">⭐ +100</div>
+                        <div class="wheel-label" style="--rot: 270deg;">🎁 الكل +1</div>
+                        <div class="wheel-label" style="--rot: 330deg;">🪄 +3</div>
+                    </div>
+                </div>
+
+                <div id="wheel-prize-msg" class="wheel-prize-msg"></div>
+                <button id="spin-wheel-btn" class="btn-play-main" data-i18n="spinNowBtn">🎲 لف العجلة الآن!</button>
+            </div>
+        </div>
+
+        <!-- PROFILE PICKER MODAL -->
         <div id="profile-picker-modal" class="modal">
             <div class="modal-content profile-picker-box">
                 <h2 data-i18n="whoIsPlaying">👋 من سيلعب اليوم؟</h2>
-                <p class="modal-sub-text" data-i18n="chooseProfileSub">اختر البروفايل الخاص بك للبدء بصورتك وأصواتك:</p>
+                <p class="modal-sub-text" data-i18n="chooseProfileSub">اختر البروفايل الخاص بك للبدء بصورتك وأصواتك ومراحلك:</p>
                 <div id="startup-profiles-grid" class="startup-profiles-grid"></div>
                 <div class="modal-footer">
                     <button id="add-profile-from-picker-btn" class="secondary-btn" data-i18n="addNewProfile">➕ إضافة طفل جديد</button>
@@ -156,11 +200,11 @@
         <div id="settings-modal" class="modal">
             <div class="modal-content settings-box">
                 <div class="modal-header">
-                    <h2 data-i18n="settingsTitle">⚙️ الإعدادات والبروفايلات</h2>
+                    <!-- Tap Title 5 times also triggers Secret Cheat Menu -->
+                    <h2 id="settings-secret-trigger" data-i18n="settingsTitle">⚙️ الإعدادات والبروفايلات</h2>
                     <button id="close-settings-btn" class="close-x">✖</button>
                 </div>
 
-                <!-- Language & General Toggles Bar -->
                 <div class="lang-bar">
                     <span data-i18n="languageLabel">🌐 اللغة / Language:</span>
                     <div class="lang-btns">
@@ -175,14 +219,13 @@
                     <button class="tab-btn" data-tab="tab-wrong" data-i18n="tabWrong">❌ أصوات الخطأ (6)</button>
                 </div>
 
-                <!-- Tab 1: Profiles Management -->
+                <!-- Tab 1: Profiles -->
                 <div id="tab-profiles" class="tab-pane active">
-                    <p class="tab-hint" data-i18n="profilesHint">اختر البروفايل النشط للعب، أو أضف بروفايل جديد لكل ابن بصورته وأصواته الخاصة:</p>
+                    <p class="tab-hint" data-i18n="profilesHint">اختر البروفايل النشط، أو أضف بروفايل جديد لكل ابن بصورته وأصواته ومستوياته المستقلة:</p>
                     <div id="profiles-list-container" class="profiles-list"></div>
 
-                    <!-- Create / Edit Kid Profile Form -->
                     <div class="new-profile-card">
-                        <h3 id="profile-form-title" data-i18n="addKidProfileTitle">➕ إضافة / تعديل بروفايل طفل</h3>
+                        <h3 data-i18n="addKidProfileTitle">➕ إضافة بروفايل طفل جديد</h3>
                         <div class="form-row">
                             <img id="new-profile-preview" src="assets/cats/main_cat.svg" class="form-avatar-preview" alt="Preview">
                             <div class="form-inputs">
@@ -199,7 +242,7 @@
                     <div class="toggle-row" style="margin-top:10px;">
                         <label>
                             <input type="checkbox" id="auto-x-toggle" checked>
-                            <span data-i18n="autoXLabel">وضع علامات (✕) تلقائياً حول القطة/الصورة الصحيحة</span>
+                            <span data-i18n="autoXLabel">وضع علامات (✕) تلقائياً حول الإجابة الصحيحة</span>
                         </label>
                     </div>
                     <div class="toggle-row">
@@ -210,23 +253,23 @@
                     </div>
                 </div>
 
-                <!-- Tab 2: Up to 6 Correct Sounds (for Active Profile) -->
+                <!-- Tab 2: 6 Correct Sounds -->
                 <div id="tab-correct" class="tab-pane">
                     <div class="active-prof-banner">
                         <span data-i18n="editingSoundsFor">تخصيص أصوات البروفايل النشط:</span>
                         <strong id="correct-tab-prof-name"></strong>
                     </div>
-                    <p class="tab-hint" data-i18n="correctSoundsHint">أضف حتى 6 صوتيات تعمل عشوائياً عند وضع الصورة في المكان الصحيح:</p>
+                    <p class="tab-hint" data-i18n="correctSoundsHint">أضف حتى 6 صوتيات تعمل عشوائياً عند الإجابة الصحيحة:</p>
                     <div id="correct-audio-list" class="audio-list"></div>
                 </div>
 
-                <!-- Tab 3: Up to 6 Wrong Sounds (for Active Profile) -->
+                <!-- Tab 3: 6 Wrong Sounds -->
                 <div id="tab-wrong" class="tab-pane">
                     <div class="active-prof-banner">
                         <span data-i18n="editingSoundsFor">تخصيص أصوات البروفايل النشط:</span>
                         <strong id="wrong-tab-prof-name"></strong>
                     </div>
-                    <p class="tab-hint" data-i18n="wrongSoundsHint">أضف حتى 6 صوتيات تعمل عشوائياً عند وضع الصورة في مكان خاطئ:</p>
+                    <p class="tab-hint" data-i18n="wrongSoundsHint">أضف حتى 6 صوتيات تعمل عشوائياً عند الإجابة الخاطئة:</p>
                     <div id="wrong-audio-list" class="audio-list"></div>
                 </div>
 
@@ -236,11 +279,54 @@
             </div>
         </div>
 
-        <!-- Win Modal -->
+        <!-- SECRET CHEAT MODAL (Triggered by 5 Taps on Logo) -->
+        <div id="cheat-modal" class="modal">
+            <div class="modal-content cheat-box">
+                <div class="modal-header">
+                    <h2>🕵️‍♂️ لوحة الأسرار (Secret Cheats)</h2>
+                    <button id="close-cheat-btn" class="close-x">✖</button>
+                </div>
+                <p class="modal-sub-text">تحكم سري خاص بك للبروفايل الحالي (<strong id="cheat-prof-name"></strong>):</p>
+
+                <div class="cheat-actions">
+                    <button id="cheat-unlock-all-btn" class="cheat-btn gold">
+                        🔓 فتح جميع الـ 120 مستوى فوراً
+                    </button>
+                    <button id="cheat-add-boosters-btn" class="cheat-btn mint">
+                        🎁 إضافة +50 لكل المساعدات (🪄 🧭 ⚡)
+                    </button>
+                    <button id="cheat-add-score-btn" class="cheat-btn purple">
+                        🏆 إضافة +1000 نقطة وفتح كل الكؤوس
+                    </button>
+
+                    <div class="cheat-jump-row">
+                        <input type="number" id="cheat-level-input" min="1" max="120" placeholder="رقم المستوى (1-120)" class="text-input">
+                        <button id="cheat-jump-btn" class="primary-btn">انتقال 🚀</button>
+                    </div>
+                </div>
+                <div id="cheat-status-msg" class="cheat-status-msg"></div>
+            </div>
+        </div>
+
+        <!-- EXIT CONFIRMATION MODAL (When pressing Back on Home Screen) -->
+        <div id="exit-confirm-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-big-icon">🐾 👋</div>
+                <h2 data-i18n="exitConfirmTitle">هل تريد الخروج من MawMaw؟</h2>
+                <p class="win-score-line" data-i18n="exitConfirmSub">تم حفظ تقدمك وجميع نقاطك تلقائياً.</p>
+                <div class="modal-footer">
+                    <button id="stay-in-game-btn" class="primary-btn" data-i18n="stayBtn">البقاء في اللعبة ▶️</button>
+                    <button id="confirm-exit-btn" class="secondary-btn danger-btn" data-i18n="exitNowBtn">خروج 🚪</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- WIN MODAL -->
         <div id="win-modal" class="modal">
             <div class="modal-content">
-                <div class="modal-big-icon">😻 🎉 🏆</div>
+                <div class="modal-big-icon">🥳 🏆 🎉</div>
                 <h2><span data-i18n="levelComplete">أحسنت! اكتمل المستوى</span> <span id="win-level-num"></span></h2>
+                <div id="win-stars-row" class="win-stars-row">⭐⭐⭐</div>
                 <p class="win-score-line"><span data-i18n="score">النقاط</span>: <strong id="win-score-val">0</strong></p>
                 <div class="modal-footer">
                     <button id="next-level-btn" class="primary-btn" data-i18n="nextLevel">المستوى التالي ⬅️</button>
@@ -248,20 +334,17 @@
             </div>
         </div>
 
-        <!-- Lose Modal -->
+        <!-- LOSE MODAL -->
         <div id="lose-modal" class="modal">
             <div class="modal-content">
-                <div class="modal-big-icon">😿 🐟</div>
-                <h2 data-i18n="outOfFishes">انتهت السمكات الثلاث!</h2>
-                <p class="win-score-line" data-i18n="loseHint">حاول مرة أخرى وتذكر عدم وضع قطتين في نفس اللون أو الصف أو العمود.</p>
+                <div class="modal-big-icon">💔 😿</div>
+                <h2 data-i18n="outOfHearts">نفدت القلوب الثلاثة!</h2>
+                <p class="win-score-line" data-i18n="loseHint">حاول مرة أخرى وتذكر: شخصية واحدة فقط في كل لون وصف وعمود بدون تلامس.</p>
                 <div class="modal-footer">
                     <button id="retry-level-btn" class="primary-btn" data-i18n="retryBtn">إعادة المحاولة 🔄</button>
                 </div>
             </div>
         </div>
-
-        <!-- Exit Toast Notification -->
-        <div id="exit-toast" class="exit-toast">اضغط رجوع مرة أخرى للخروج</div>
     </div>
 
     <script src="script.js"></script>
