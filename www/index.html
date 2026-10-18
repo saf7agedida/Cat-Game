@@ -3,23 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#6c5ce7">
+    <meta name="theme-color" content="#4834d4">
     <title>MawMaw - ماوماو</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Confetti Canvas -->
     <canvas id="confetti-canvas"></canvas>
+
+    <!-- Achievement Unlocked Toast -->
+    <div id="trophy-toast" class="trophy-toast">
+        🏆 <span id="trophy-toast-text">فتحت كأساً جديداً + لفة عجلة حظ مجانية!</span>
+    </div>
 
     <div class="app-container">
         <!-- Top Header -->
         <header class="top-bar">
             <button id="nav-back-btn" class="nav-glass-btn" title="Back">👥</button>
 
-            <!-- Secret Cheat Trigger: Tap Logo 5 times quickly! -->
+            <!-- Pro 3D Logo (Tap 5 times quickly for Secret Cheats) -->
             <div id="top-logo-wrap" class="top-logo-wrap" title="MawMaw">
-                <img src="assets/mawmaw_logo.svg" alt="MawMaw Logo" class="header-logo-img">
+                <img src="assets/mawmaw_logo.svg" alt="MawMaw 3D Logo" class="header-logo-img">
             </div>
 
             <div class="top-stats" id="top-game-stats" style="display:none;">
@@ -33,12 +37,20 @@
                 </div>
             </div>
 
-            <button id="settings-btn" class="nav-glass-btn" title="Settings">⚙️</button>
+            <div class="header-right-btns">
+                <button id="bgm-quick-btn" class="nav-glass-btn" title="الموسيقى الخلفية">🎵</button>
+                <button id="settings-btn" class="nav-glass-btn" title="Settings">⚙️</button>
+            </div>
         </header>
 
         <!-- 1. HOME SCREEN -->
         <main id="home-screen" class="screen active">
             <div class="home-card">
+                <!-- 3D Logo Showcase on Home -->
+                <div class="home-logo-showcase" id="home-logo-secret">
+                    <img src="assets/mawmaw_logo.svg" alt="MawMaw 3D" class="home-big-logo">
+                </div>
+
                 <!-- Active Profile Banner -->
                 <div class="hero-profile-strip">
                     <div class="avatar-ring">
@@ -68,7 +80,7 @@
                 <!-- Main Navigation Buttons -->
                 <div class="home-menu-btns">
                     <button id="play-now-btn" class="btn-play-main">
-                        🚀 <span data-i18n="playNow">العب الآن</span> (<span data-i18n="level">المستوى</span> <span id="play-btn-lvl">1</span>)
+                        🚀 <span id="play-now-label" data-i18n="playNow">العب الآن</span> (<span data-i18n="level">المستوى</span> <span id="play-btn-lvl">1</span>)
                     </button>
 
                     <div class="home-sub-grid">
@@ -78,7 +90,7 @@
                         </button>
                         <button id="open-wheel-btn" class="btn-sub-card sunny">
                             <span class="sub-icon">🎡</span>
-                            <span data-i18n="luckyWheel">عجلة الهدايا</span>
+                            <span><span data-i18n="luckyWheel">عجلة الهدايا</span> <strong id="home-wheel-badge" class="wheel-mini-badge">1</strong></span>
                         </button>
                         <button id="open-trophies-btn" class="btn-sub-card coral">
                             <span class="sub-icon">🏆</span>
@@ -93,27 +105,26 @@
             </div>
         </main>
 
-        <!-- 2. LEVELS MAP SCREEN (Locked Progression per Profile) -->
+        <!-- 2. LEVELS MAP SCREEN -->
         <main id="level-screen" class="screen">
             <div class="section-banner">
                 <h2 data-i18n="levelsMapTitle">🗺️ مراحل مغامرة MawMaw</h2>
-                <p data-i18n="levelsMapSub">افتح المراحل واحدة تلو الأخرى واجمع النجوم الثلاث لكل مرحلة!</p>
+                <p data-i18n="levelsMapSub">افتح المراحل واحدة تلو الأخرى؛ يتم حفظ تقدمك داخل المرحلة تلقائياً!</p>
             </div>
             <div id="levels-grid" class="levels-grid"></div>
         </main>
 
-        <!-- 3. TROPHIES & STICKERS ROOM SCREEN (New Feature!) -->
+        <!-- 3. TROPHIES ROOM SCREEN -->
         <main id="trophies-screen" class="screen">
             <div class="section-banner">
                 <h2 data-i18n="trophiesTitle">🏆 غرفة الكؤوس والأوسمة</h2>
-                <p data-i18n="trophiesSub">العب واربح المستويات لتفتح أوسمة الأبطال الخاصة ببروفايلك!</p>
+                <p data-i18n="trophiesSub">كل كأس تفتحه يمنحك لفة هدية مجانية في عجلة الحظ 🎡!</p>
             </div>
             <div id="trophies-grid" class="trophies-grid"></div>
         </main>
 
-        <!-- 4. GAME SCREEN (Distinct MawMaw Arcade Look) -->
+        <!-- 4. GAME SCREEN -->
         <main id="game-screen" class="screen">
-            <!-- Region Progress + 3 Energy Hearts -->
             <div class="game-hud-bar" dir="ltr">
                 <div id="region-gems-bar" class="gems-pill"></div>
                 <div id="lives-bar" class="hearts-pill">
@@ -123,24 +134,20 @@
                 </div>
             </div>
 
-            <!-- Distinct MawMaw Rules Pills -->
             <div class="mawmaw-rules-bar">
                 <div class="m-rule-chip">🎨 <span data-i18n="mRule1">واحد بكل لون</span></div>
                 <div class="m-rule-chip">📏 <span data-i18n="mRule2">واحد بكل صف وعمود</span></div>
                 <div class="m-rule-chip">🚫 <span data-i18n="mRule3">ممنوع التلامس</span></div>
             </div>
 
-            <!-- 3D Tactile Puzzle Board -->
             <div class="board-frame">
                 <div id="regions-board" class="regions-board" dir="ltr"></div>
             </div>
 
-            <!-- Tap Guide -->
             <div class="tap-hint-pill" data-i18n="tapGuide">
                 ضغطة واحدة = وضع/إلغاء <strong>✕</strong> &nbsp;|&nbsp; ضغطتان سريعتان = <strong>وضع الشخصية</strong>
             </div>
 
-            <!-- Distinct MawMaw Power-ups -->
             <div class="powerups-dock" dir="ltr">
                 <button id="booster-wand" class="power-btn wand-theme">
                     <img id="booster-cat-img" src="assets/cats/main_cat.svg" alt="Wand" class="power-avatar">
@@ -155,27 +162,36 @@
                     <span class="power-emoji">⚡</span>
                     <span id="badge-mouse" class="power-count">2</span>
                 </button>
+                <button id="restart-lvl-btn" class="power-btn reset-theme" title="إعادة المرحلة من البداية">
+                    <span class="power-emoji">🔄</span>
+                </button>
             </div>
         </main>
 
-        <!-- LUCKY WHEEL MODAL (New Feature!) -->
+        <!-- LUCKY WHEEL MODAL (Exact Slice Alignment + Weekly/Trophy Spins) -->
         <div id="wheel-modal" class="modal">
             <div class="modal-content wheel-box">
                 <div class="modal-header">
                     <h2 data-i18n="luckyWheelTitle">🎡 عجلة هدايا MawMaw</h2>
                     <button id="close-wheel-btn" class="close-x">✖</button>
                 </div>
-                <p class="modal-sub-text" data-i18n="luckyWheelSub">لف العجلة واربح مساعدات ونقاط مجانية لبروفايلك!</p>
 
-                <div class="wheel-stage">
+                <div class="wheel-quota-banner">
+                    <div><span data-i18n="spinsAvailable">اللفات المتاحة الآن:</span> <strong id="wheel-spins-count">0</strong> 🎟️</div>
+                    <div id="wheel-cooldown-text" class="wheel-cooldown-sub"></div>
+                </div>
+
+                <div class="wheel-stage" dir="ltr">
                     <div class="wheel-pointer">🔻</div>
                     <div id="lucky-wheel-disc" class="lucky-wheel-disc">
-                        <div class="wheel-label" style="--rot: 30deg;">🪄 +2</div>
-                        <div class="wheel-label" style="--rot: 90deg;">🧭 +3</div>
-                        <div class="wheel-label" style="--rot: 150deg;">⚡ +2</div>
-                        <div class="wheel-label" style="--rot: 210deg;">⭐ +100</div>
-                        <div class="wheel-label" style="--rot: 270deg;">🎁 الكل +1</div>
-                        <div class="wheel-label" style="--rot: 330deg;">🪄 +3</div>
+                        <!-- 6 Slices: each 60deg, centers at 30, 90, 150, 210, 270, 330 -->
+                        <div class="wheel-label" style="--rot: 30deg;"><span>🪄 +2</span></div>
+                        <div class="wheel-label" style="--rot: 90deg;"><span>🧭 +3</span></div>
+                        <div class="wheel-label" style="--rot: 150deg;"><span>⚡ +2</span></div>
+                        <div class="wheel-label" style="--rot: 210deg;"><span>⭐ +100</span></div>
+                        <div class="wheel-label" style="--rot: 270deg;"><span>🎁 +1</span></div>
+                        <div class="wheel-label" style="--rot: 330deg;"><span>🪄 +3</span></div>
+                        <div class="wheel-center-knob">👑</div>
                     </div>
                 </div>
 
@@ -188,7 +204,7 @@
         <div id="profile-picker-modal" class="modal">
             <div class="modal-content profile-picker-box">
                 <h2 data-i18n="whoIsPlaying">👋 من سيلعب اليوم؟</h2>
-                <p class="modal-sub-text" data-i18n="chooseProfileSub">اختر البروفايل الخاص بك للبدء بصورتك وأصواتك ومراحلك:</p>
+                <p class="modal-sub-text" data-i18n="chooseProfileSub">اختر البروفايل الخاص بك للبدء بصورتك وأصواتك ومراحلك المحفوظة:</p>
                 <div id="startup-profiles-grid" class="startup-profiles-grid"></div>
                 <div class="modal-footer">
                     <button id="add-profile-from-picker-btn" class="secondary-btn" data-i18n="addNewProfile">➕ إضافة طفل جديد</button>
@@ -200,7 +216,6 @@
         <div id="settings-modal" class="modal">
             <div class="modal-content settings-box">
                 <div class="modal-header">
-                    <!-- Tap Title 5 times also triggers Secret Cheat Menu -->
                     <h2 id="settings-secret-trigger" data-i18n="settingsTitle">⚙️ الإعدادات والبروفايلات</h2>
                     <button id="close-settings-btn" class="close-x">✖</button>
                 </div>
@@ -251,6 +266,12 @@
                             <span data-i18n="soundToggleLabel">تشغيل المؤثرات الصوتية 🔊</span>
                         </label>
                     </div>
+                    <div class="toggle-row">
+                        <label>
+                            <input type="checkbox" id="bgm-toggle" checked>
+                            <span data-i18n="bgmToggleLabel">موسيقى هادئة في الخلفية أثناء اللعب 🎵</span>
+                        </label>
+                    </div>
                 </div>
 
                 <!-- Tab 2: 6 Correct Sounds -->
@@ -259,7 +280,7 @@
                         <span data-i18n="editingSoundsFor">تخصيص أصوات البروفايل النشط:</span>
                         <strong id="correct-tab-prof-name"></strong>
                     </div>
-                    <p class="tab-hint" data-i18n="correctSoundsHint">أضف حتى 6 صوتيات تعمل عشوائياً عند الإجابة الصحيحة:</p>
+                    <p class="tab-hint" data-i18n="correctSoundsHint">أضف حتى 6 صوتيات تعمل عشوائياً عند الإجابة الصحيحة (ينخفض صوت الموسيقى الخلفية تلقائياً عند تشغيلها):</p>
                     <div id="correct-audio-list" class="audio-list"></div>
                 </div>
 
@@ -279,7 +300,7 @@
             </div>
         </div>
 
-        <!-- SECRET CHEAT MODAL (Triggered by 5 Taps on Logo) -->
+        <!-- SECRET CHEAT MODAL (5 Taps on Logo) -->
         <div id="cheat-modal" class="modal">
             <div class="modal-content cheat-box">
                 <div class="modal-header">
@@ -295,6 +316,9 @@
                     <button id="cheat-add-boosters-btn" class="cheat-btn mint">
                         🎁 إضافة +50 لكل المساعدات (🪄 🧭 ⚡)
                     </button>
+                    <button id="cheat-add-spins-btn" class="cheat-btn sunny">
+                        🎡 إضافة +10 لفات مجانية لعجلة الحظ
+                    </button>
                     <button id="cheat-add-score-btn" class="cheat-btn purple">
                         🏆 إضافة +1000 نقطة وفتح كل الكؤوس
                     </button>
@@ -308,12 +332,12 @@
             </div>
         </div>
 
-        <!-- EXIT CONFIRMATION MODAL (When pressing Back on Home Screen) -->
+        <!-- EXIT CONFIRMATION MODAL -->
         <div id="exit-confirm-modal" class="modal">
             <div class="modal-content">
                 <div class="modal-big-icon">🐾 👋</div>
                 <h2 data-i18n="exitConfirmTitle">هل تريد الخروج من MawMaw؟</h2>
-                <p class="win-score-line" data-i18n="exitConfirmSub">تم حفظ تقدمك وجميع نقاطك تلقائياً.</p>
+                <p class="win-score-line" data-i18n="exitConfirmSub">تم حفظ خطواتك داخل المستوى وتقدمك تلقائياً.</p>
                 <div class="modal-footer">
                     <button id="stay-in-game-btn" class="primary-btn" data-i18n="stayBtn">البقاء في اللعبة ▶️</button>
                     <button id="confirm-exit-btn" class="secondary-btn danger-btn" data-i18n="exitNowBtn">خروج 🚪</button>

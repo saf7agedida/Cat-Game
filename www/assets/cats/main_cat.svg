@@ -1,40 +1,50 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 140">
   <defs>
-    <linearGradient id="furGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ff9f43"/>
-      <stop offset="100%" stop-color="#ff6b6b"/>
+    <radialGradient id="head3D" cx="38%" cy="32%" r="65%">
+      <stop offset="0%" stop-color="#ffd32a"/>
+      <stop offset="45%" stop-color="#ff9f43"/>
+      <stop offset="85%" stop-color="#ee5253"/>
+      <stop offset="100%" stop-color="#b33939"/>
+    </radialGradient>
+    <radialGradient id="cheek3D" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="80%" stop-color="#f5f6fa"/>
+      <stop offset="100%" stop-color="#dcdde1"/>
+    </radialGradient>
+    <linearGradient id="crown3D" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fff6d6"/>
+      <stop offset="50%" stop-color="#ffd32a"/>
+      <stop offset="100%" stop-color="#e67e22"/>
     </linearGradient>
-    <linearGradient id="crownGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#ffeaa7"/>
-      <stop offset="100%" stop-color="#fdcb6e"/>
-    </linearGradient>
+    <filter id="drop3D" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#1e272e" flood-opacity="0.45"/>
+    </filter>
   </defs>
-  <!-- Glowing Aura Circle -->
-  <circle cx="70" cy="74" r="56" fill="#fff5e6" stroke="#ff9f43" stroke-width="4"/>
-  <!-- Cute Ears -->
-  <polygon points="26,60 18,20 56,38" fill="url(#furGrad)" stroke="#2d3436" stroke-width="3.5" stroke-linejoin="round"/>
-  <polygon points="114,60 122,20 84,38" fill="url(#furGrad)" stroke="#2d3436" stroke-width="3.5" stroke-linejoin="round"/>
-  <polygon points="31,52 25,28 50,40" fill="#fab1a0"/>
-  <polygon points="109,52 115,28 90,40" fill="#fab1a0"/>
-  <!-- Main Head -->
-  <ellipse cx="70" cy="78" rx="46" ry="42" fill="url(#furGrad)" stroke="#2d3436" stroke-width="3.5"/>
-  <!-- White Cheeks Patch -->
-  <ellipse cx="70" cy="86" rx="34" ry="26" fill="#ffffff"/>
-  <!-- Rosy Blush -->
-  <ellipse cx="40" cy="82" rx="7" ry="4.5" fill="#ff7675" opacity="0.7"/>
-  <ellipse cx="100" cy="82" rx="7" ry="4.5" fill="#ff7675" opacity="0.7"/>
-  <!-- Big Sparkly Anime Eyes -->
-  <circle cx="50" cy="70" r="8.5" fill="#2d3436"/>
-  <circle cx="90" cy="70" r="8.5" fill="#2d3436"/>
-  <circle cx="47" cy="67" r="3.2" fill="#ffffff"/>
-  <circle cx="87" cy="67" r="3.2" fill="#ffffff"/>
-  <circle cx="53" cy="73" r="1.6" fill="#ffffff"/>
-  <circle cx="93" cy="73" r="1.6" fill="#ffffff"/>
-  <!-- Cute Nose & Big Joyful Smile -->
-  <polygon points="65,78 75,78 70,84" fill="#e84393"/>
-  <path d="M 56,86 Q 70,98 84,86 Z" fill="#ff7675" stroke="#2d3436" stroke-width="2.5" stroke-linejoin="round"/>
-  <path d="M 56,86 Q 63,91 70,84 Q 77,91 84,86" fill="none" stroke="#2d3436" stroke-width="3" stroke-linecap="round"/>
-  <!-- Little Crown on Top -->
-  <polygon points="50,38 56,20 70,30 84,20 90,38" fill="url(#crownGrad)" stroke="#2d3436" stroke-width="2.5" stroke-linejoin="round"/>
-  <circle cx="70" cy="25" r="3" fill="#e84393"/>
+  <g filter="url(#drop3D)">
+    <!-- 3D Ears -->
+    <polygon points="24,62 16,18 56,36" fill="url(#head3D)" stroke="#ffffff" stroke-width="3" stroke-linejoin="round"/>
+    <polygon points="116,62 124,18 84,36" fill="url(#head3D)" stroke="#ffffff" stroke-width="3" stroke-linejoin="round"/>
+    <polygon points="30,54 24,26 50,38" fill="#ff7675"/>
+    <polygon points="110,54 116,26 90,38" fill="#ff7675"/>
+    <!-- 3D Sphere Head -->
+    <ellipse cx="70" cy="78" rx="48" ry="43" fill="url(#head3D)" stroke="#ffffff" stroke-width="3.5"/>
+    <!-- 3D Muzzle Cushion -->
+    <ellipse cx="70" cy="87" rx="35" ry="26" fill="url(#cheek3D)"/>
+    <!-- Top Specular Head Shine -->
+    <ellipse cx="55" cy="48" rx="18" ry="7" fill="#ffffff" opacity="0.35" transform="rotate(-12 55 48)"/>
+    <!-- Glossy 3D Eyes -->
+    <circle cx="49" cy="70" r="9.5" fill="#1e272e"/>
+    <circle cx="91" cy="70" r="9.5" fill="#1e272e"/>
+    <circle cx="46" cy="66.5" r="3.8" fill="#ffffff"/>
+    <circle cx="88" cy="66.5" r="3.8" fill="#ffffff"/>
+    <circle cx="52" cy="73.5" r="2" fill="#48dbfb"/>
+    <circle cx="94" cy="73.5" r="2" fill="#48dbfb"/>
+    <!-- Pink 3D Nose & Smile -->
+    <ellipse cx="70" cy="80" rx="6" ry="4.5" fill="#ff6b81"/>
+    <path d="M 55,86 Q 70,100 85,86 Z" fill="#eb4d4b" stroke="#1e272e" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M 55,86 Q 63,92 70,84 Q 77,92 85,86" fill="none" stroke="#1e272e" stroke-width="3" stroke-linecap="round"/>
+    <!-- 3D Royal Crown -->
+    <polygon points="48,37 54,15 70,27 86,15 92,37" fill="url(#crown3D)" stroke="#ffffff" stroke-width="2.2" stroke-linejoin="round"/>
+    <circle cx="70" cy="21" r="3.5" fill="#ff4757"/>
+  </g>
 </svg>

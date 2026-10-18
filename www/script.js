@@ -1,18 +1,10 @@
-// ألوان مناطق MawMaw المبهجة الجديدة (مختلفة عن اللعبة القديمة)
 const REGION_COLORS = [
-    '#ff9ff3', // 0: وردي كاندي
-    '#feca57', // 1: أصفر مشمس
-    '#48dbfb', // 2: سماوي مشرق
-    '#1dd1a1', // 3: أخضر نعناعي
-    '#ff6b6b', // 4: مرجاني دافئ
-    '#a29bfe', // 5: لافندر بنفسجي
-    '#ff9f43', // 6: برتقالي مانجو
-    '#00d2d3', // 7: فيروزي
-    '#c8d6e5'  // 8: فضي ناعم
+    '#ff9ff3', '#feca57', '#48dbfb', '#1dd1a1', '#ff6b6b',
+    '#a29bfe', '#ff9f43', '#00d2d3', '#c8d6e5'
 ];
 const TOTAL_LEVELS = 120;
+const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
-// قائمة الكؤوس والأوسمة الـ 12 (تفتح مع تقدم كل بروفايل)
 const TROPHIES_LIST = [
     { id: 't1', icon: '🐣', reqLvl: 1, ar: 'البداية الشجاعة', en: 'Brave Starter', descAr: 'ابدأ رحلتك في ماوماو', descEn: 'Start your MawMaw journey' },
     { id: 't2', icon: '🌟', reqLvl: 3, ar: 'مكتشف الألوان', en: 'Color Explorer', descAr: 'افتح المستوى 3', descEn: 'Unlock Level 3' },
@@ -28,7 +20,6 @@ const TROPHIES_LIST = [
     { id: 't12', icon: '🏆', reqLvl: 120, ar: 'أسطورة MawMaw', en: 'MawMaw Legend', descAr: 'الوصول للمستوى 120', descEn: 'Reach Level 120' }
 ];
 
-// --- قاموس اللغتين العربية والإنجليزية ---
 const I18N = {
     ar: {
         level: 'المستوى',
@@ -38,23 +29,25 @@ const I18N = {
         unlockedLvl: 'أعلى مستوى مفتوح',
         totalScore: 'مجموع النقاط',
         playNow: 'العب الآن',
+        continuePlay: 'استكمال اللعب',
         levelsMap: 'خريطة المستويات',
         luckyWheel: 'عجلة الهدايا',
         trophiesRoom: 'غرفة الكؤوس',
         settingsAndProfiles: 'البروفايلات والإعدادات',
         levelsMapTitle: '🗺️ مراحل مغامرة MawMaw',
-        levelsMapSub: 'افتح المراحل واحدة تلو الأخرى واجمع النجوم الثلاث لكل مرحلة!',
+        levelsMapSub: 'افتح المراحل واحدة تلو الأخرى؛ يتم حفظ تقدمك داخل المرحلة تلقائياً!',
         trophiesTitle: '🏆 غرفة الكؤوس والأوسمة',
-        trophiesSub: 'العب واربح المستويات لتفتح أوسمة الأبطال الخاصة ببروفايلك!',
+        trophiesSub: 'كل كأس تفتحه يمنحك لفة هدية مجانية في عجلة الحظ 🎡!',
         mRule1: 'واحد بكل لون',
         mRule2: 'واحد بكل صف وعمود',
         mRule3: 'ممنوع التلامس',
         tapGuide: 'ضغطة واحدة = وضع/إلغاء <strong>✕</strong> &nbsp;|&nbsp; ضغطتان سريعتان = <strong>وضع الشخصية</strong>',
         luckyWheelTitle: '🎡 عجلة هدايا MawMaw',
-        luckyWheelSub: 'لف العجلة واربح مساعدات ونقاط مجانية لبروفايلك!',
+        spinsAvailable: 'اللفات المتاحة الآن:',
         spinNowBtn: '🎲 لف العجلة الآن!',
+        noSpinsBtn: '⏳ لا توجد لفات متاحة حالياً',
         whoIsPlaying: '👋 من سيلعب اليوم؟',
-        chooseProfileSub: 'اختر البروفايل الخاص بك للبدء بصورتك وأصواتك ومراحلك:',
+        chooseProfileSub: 'اختر البروفايل الخاص بك للبدء بصورتك وأصواتك ومراحلك المحفوظة:',
         addNewProfile: '➕ إضافة طفل جديد',
         settingsTitle: '⚙️ الإعدادات والبروفايلات',
         languageLabel: '🌐 اللغة / Language:',
@@ -67,12 +60,13 @@ const I18N = {
         saveProfileBtn: 'حفظ البروفايل وتفعيله ✨',
         autoXLabel: 'وضع علامات (✕) تلقائياً حول الإجابة الصحيحة',
         soundToggleLabel: 'تشغيل المؤثرات الصوتية 🔊',
+        bgmToggleLabel: 'موسيقى هادئة في الخلفية أثناء اللعب 🎵',
         editingSoundsFor: 'تخصيص أصوات البروفايل النشط:',
-        correctSoundsHint: 'أضف حتى 6 صوتيات تعمل عشوائياً عند الإجابة الصحيحة:',
+        correctSoundsHint: 'أضف حتى 6 صوتيات تعمل عشوائياً عند الإجابة الصحيحة (ينخفض صوت الموسيقى الخلفية تلقائياً عند تشغيلها):',
         wrongSoundsHint: 'أضف حتى 6 صوتيات تعمل عشوائياً عند الإجابة الخاطئة:',
         doneBtn: 'تم ✅',
         exitConfirmTitle: 'هل تريد الخروج من MawMaw؟',
-        exitConfirmSub: 'تم حفظ تقدمك وجميع نقاطك تلقائياً.',
+        exitConfirmSub: 'تم حفظ خطواتك داخل المستوى وتقدمك تلقائياً.',
         stayBtn: 'البقاء في اللعبة ▶️',
         exitNowBtn: 'خروج 🚪',
         levelComplete: 'أحسنت! اكتمل المستوى',
@@ -97,23 +91,25 @@ const I18N = {
         unlockedLvl: 'Unlocked Level',
         totalScore: 'Total Score',
         playNow: 'Play Now',
+        continuePlay: 'Continue Level',
         levelsMap: 'Levels Map',
         luckyWheel: 'Lucky Wheel',
         trophiesRoom: 'Trophy Room',
         settingsAndProfiles: 'Profiles & Settings',
         levelsMapTitle: '🗺️ MawMaw Adventure Map',
-        levelsMapSub: 'Complete levels one by one to unlock the next challenge!',
+        levelsMapSub: 'Unlock levels one by one; your in-level moves are auto-saved!',
         trophiesTitle: '🏆 Trophies & Badges Room',
-        trophiesSub: 'Beat levels to unlock special hero trophies for your profile!',
+        trophiesSub: 'Every trophy you unlock grants +1 Free Spin on the Lucky Wheel 🎡!',
         mRule1: '1 per Color',
         mRule2: '1 per Row & Col',
         mRule3: 'No Touching',
         tapGuide: '1 Tap = Toggle <strong>✕</strong> &nbsp;|&nbsp; Fast Double-Tap = <strong>Place Character</strong>',
         luckyWheelTitle: '🎡 MawMaw Lucky Wheel',
-        luckyWheelSub: 'Spin the wheel to win free power-ups and bonus score!',
+        spinsAvailable: 'Available Spins:',
         spinNowBtn: '🎲 Spin Now!',
+        noSpinsBtn: '⏳ No Spins Available',
         whoIsPlaying: '👋 Who is playing today?',
-        chooseProfileSub: 'Choose your profile to play with your photo, sounds & levels:',
+        chooseProfileSub: 'Choose your profile to play with your photo, sounds & saved progress:',
         addNewProfile: '➕ Add New Kid Profile',
         settingsTitle: '⚙️ Settings & Profiles',
         languageLabel: '🌐 Language / اللغة:',
@@ -126,12 +122,13 @@ const I18N = {
         saveProfileBtn: 'Save & Activate Profile ✨',
         autoXLabel: 'Auto-place (✕) around correct character',
         soundToggleLabel: 'Enable Sound Effects 🔊',
+        bgmToggleLabel: 'Calm Background Music while playing 🎵',
         editingSoundsFor: 'Customizing sounds for active profile:',
-        correctSoundsHint: 'Add up to 6 sounds played randomly when placing in the right spot:',
-        wrongSoundsHint: 'Add up to 6 sounds played randomly when placing in a wrong spot:',
+        correctSoundsHint: 'Add up to 6 sounds played randomly when right (BGM ducks automatically):',
+        wrongSoundsHint: 'Add up to 6 sounds played randomly when wrong:',
         doneBtn: 'Done ✅',
         exitConfirmTitle: 'Exit MawMaw Game?',
-        exitConfirmSub: 'Your progress and stars are saved automatically.',
+        exitConfirmSub: 'Your in-level board moves and stars are saved automatically.',
         stayBtn: 'Stay & Play ▶️',
         exitNowBtn: 'Exit 🚪',
         levelComplete: 'Awesome! Completed Level',
@@ -150,12 +147,20 @@ const I18N = {
     }
 };
 
-// --- قاعدة بيانات IndexedDB لحفظ البروفايلات وتقدم المراحل ---
+// عنصر SVG لعلامة X يملأ 75% من مساحة المربع مع توهج Glow
+function getGlowingXSvg() {
+    return `<svg class="tile-x-svg" viewBox="0 0 100 100">
+        <path d="M 18,18 L 82,82 M 82,18 L 18,82" stroke="#ffffff" stroke-width="18" stroke-linecap="round"/>
+        <path d="M 18,18 L 82,82 M 82,18 L 18,82" stroke="#4834d4" stroke-width="8" stroke-linecap="round"/>
+    </svg>`;
+}
+
+// --- قاعدة بيانات IndexedDB ---
 class StorageDB {
     constructor() { this.db = null; }
     init() {
         return new Promise((resolve) => {
-            const req = indexedDB.open('MawMawProfilesDB_v4', 1);
+            const req = indexedDB.open('MawMawProfilesDB_v5', 1);
             req.onupgradeneeded = (e) => {
                 const db = e.target.result;
                 if (!db.objectStoreNames.contains('store')) db.createObjectStore('store');
@@ -189,6 +194,7 @@ let appPrefs = {
     lang: localStorage.getItem('mawmaw_lang') || 'ar',
     autoX: localStorage.getItem('mawmaw_autox') !== 'false',
     soundEnabled: localStorage.getItem('mawmaw_sound') !== 'false',
+    bgmEnabled: localStorage.getItem('mawmaw_bgm') !== 'false',
     activeProfileId: localStorage.getItem('mawmaw_active_prof') || 'default_cat'
 };
 
@@ -203,10 +209,14 @@ function createDefaultProfile() {
         correctSounds: {},
         wrongSounds: {},
         currentLevel: 1,
-        unlockedLevel: 1, // المستويات تفتح واحداً تلو الآخر
-        stars: {},        // عدد النجوم لكل مستوى مكتمل
+        unlockedLevel: 1,
+        stars: {},
         score: 0,
-        boosters: { cat: 7, hint: 9, mouse: 2 }
+        boosters: { cat: 7, hint: 9, mouse: 2 },
+        savedGame: null,          // حفظ خطوات المستوى الحالي عند الخروج
+        lastWeeklySpin: 0,        // طابع زمني للفة الأسبوعية
+        bonusSpins: 0,            // لفات هدية عند تحقيق كأس جديد
+        unlockedTrophies: { t1: true }
     };
 }
 
@@ -217,6 +227,9 @@ function ensureProfileFields(p) {
     if (!p.boosters) p.boosters = { cat: 7, hint: 9, mouse: 2 };
     if (!p.correctSounds) p.correctSounds = {};
     if (!p.wrongSounds) p.wrongSounds = {};
+    if (typeof p.lastWeeklySpin !== 'number') p.lastWeeklySpin = 0;
+    if (typeof p.bonusSpins !== 'number') p.bonusSpins = 0;
+    if (!p.unlockedTrophies) p.unlockedTrophies = { t1: true };
     return p;
 }
 
@@ -233,6 +246,161 @@ async function saveProfilesToDB() {
     await db.set('profiles_list', profiles);
     localStorage.setItem('mawmaw_active_prof', appPrefs.activeProfileId);
 }
+
+// فحص ما إذا كان اللاعب قد فتح كأساً جديداً لمنحه لفة عجلة حظ مجانية!
+function checkAndGrantNewTrophies(prof) {
+    let newlyUnlocked = [];
+    TROPHIES_LIST.forEach(t => {
+        if (prof.unlockedLevel >= t.reqLvl && !prof.unlockedTrophies[t.id]) {
+            prof.unlockedTrophies[t.id] = true;
+            prof.bonusSpins = (prof.bonusSpins || 0) + 1;
+            newlyUnlocked.push(appPrefs.lang === 'ar' ? t.ar : t.en);
+        }
+    });
+    if (newlyUnlocked.length > 0) {
+        const toast = document.getElementById('trophy-toast');
+        const txt = document.getElementById('trophy-toast-text');
+        txt.textContent = appPrefs.lang === 'ar'
+            ? `فتحت وسام "${newlyUnlocked[0]}" + لفة عجلة حظ مجانية 🎡!`
+            : `Unlocked "${newlyUnlocked[0]}" + 1 Free Wheel Spin 🎡!`;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 4000);
+    }
+}
+
+// حساب اللفات المتاحة للبروفايل (لفة أسبوعية + لفات الكؤوس)
+function getProfileSpinInfo(prof) {
+    const now = Date.now();
+    const elapsed = now - (prof.lastWeeklySpin || 0);
+    const hasWeekly = elapsed >= ONE_WEEK_MS;
+    const totalSpins = (hasWeekly ? 1 : 0) + (prof.bonusSpins || 0);
+    const remainingMs = hasWeekly ? 0 : (ONE_WEEK_MS - elapsed);
+    return { hasWeekly, totalSpins, remainingMs };
+}
+
+function formatRemainingCooldown(ms) {
+    const days = Math.floor(ms / (24 * 60 * 60 * 1000));
+    const hours = Math.floor((ms % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+    if (appPrefs.lang === 'ar') {
+        return `اللفة الأسبوعية القادمة بعد: ${days} يوم و ${hours} ساعة (أو افتح كأساً جديداً 🏆!)`;
+    }
+    return `Next weekly spin in: ${days}d ${hours}h (or unlock a new Trophy 🏆!)`;
+}
+
+// --- نظام الصوتيات والموسيقى الخلفية مع خفض الصوت الذكي (Audio Ducking) ---
+class SoundManager {
+    constructor() {
+        this.xTapAudio = new Audio('assets/sounds/x_tap.wav');
+        this.xTapAudio.volume = 0.45;
+
+        this.defaultCorrect = [
+            new Audio('assets/sounds/correct1.wav'),
+            new Audio('assets/sounds/correct2.wav'),
+            new Audio('assets/sounds/correct3.wav')
+        ];
+        this.defaultWrong = [
+            new Audio('assets/sounds/wrong1.wav'),
+            new Audio('assets/sounds/wrong2.wav')
+        ];
+        this.defaultWin = new Audio('assets/sounds/win.wav');
+
+        // موسيقى خلفية هادئة
+        this.bgm = new Audio('assets/sounds/bgm.wav');
+        this.bgm.loop = true;
+        this.normalBgmVol = 0.16; // صوت خفيف وهادئ في الخلفية
+        this.duckedBgmVol = 0.015; // يوطى جداً عند ظهور الأصوات المسجلة
+        this.bgm.volume = this.normalBgmVol;
+        this.duckTimer = null;
+        this.fadeInterval = null;
+    }
+
+    updateBgmState() {
+        const btn = document.getElementById('bgm-quick-btn');
+        if (btn) btn.textContent = appPrefs.bgmEnabled ? '🎵' : '🔇';
+        if (appPrefs.bgmEnabled && currentScreen === 'game') {
+            this.bgm.play().catch(() => {});
+        } else {
+            this.bgm.pause();
+        }
+    }
+
+    // خفض صوت الموسيقى الخلفية فوراً عند تشغيل صوت القطة أو التسجيل الصوتي
+    duckBgm(minDurationMs = 1200) {
+        if (!appPrefs.bgmEnabled) return;
+        clearInterval(this.fadeInterval);
+        clearTimeout(this.duckTimer);
+        this.bgm.volume = this.duckedBgmVol;
+
+        this.duckTimer = setTimeout(() => {
+            this.restoreBgmSmoothly();
+        }, minDurationMs);
+    }
+
+    restoreBgmSmoothly() {
+        clearInterval(this.fadeInterval);
+        this.fadeInterval = setInterval(() => {
+            if (this.bgm.volume < this.normalBgmVol - 0.015) {
+                this.bgm.volume = Math.min(this.normalBgmVol, this.bgm.volume + 0.015);
+            } else {
+                this.bgm.volume = this.normalBgmVol;
+                clearInterval(this.fadeInterval);
+            }
+        }, 60);
+    }
+
+    playXTap() {
+        if (!appPrefs.soundEnabled) return;
+        this.xTapAudio.currentTime = 0;
+        this.xTapAudio.play().catch(() => {});
+    }
+
+    playVoiceWithDucking(audioObj, fallbackMs = 1100) {
+        this.duckBgm(fallbackMs);
+        audioObj.onended = () => {
+            clearTimeout(this.duckTimer);
+            this.restoreBgmSmoothly();
+        };
+        audioObj.play().catch(() => {});
+    }
+
+    playCorrect() {
+        if (!appPrefs.soundEnabled) return;
+        const prof = getActiveProfile();
+        const custom = Object.values(prof.correctSounds || {}).filter(Boolean);
+        if (custom.length > 0) {
+            const pick = custom[Math.floor(Math.random() * custom.length)];
+            const customAudio = new Audio(pick.data);
+            this.playVoiceWithDucking(customAudio, 3500);
+        } else {
+            const pick = this.defaultCorrect[Math.floor(Math.random() * this.defaultCorrect.length)];
+            pick.currentTime = 0;
+            this.playVoiceWithDucking(pick, 900);
+        }
+    }
+
+    playWrong() {
+        if (!appPrefs.soundEnabled) return;
+        const prof = getActiveProfile();
+        const custom = Object.values(prof.wrongSounds || {}).filter(Boolean);
+        if (custom.length > 0) {
+            const pick = custom[Math.floor(Math.random() * custom.length)];
+            const customAudio = new Audio(pick.data);
+            this.playVoiceWithDucking(customAudio, 3500);
+        } else {
+            const pick = this.defaultWrong[Math.floor(Math.random() * this.defaultWrong.length)];
+            pick.currentTime = 0;
+            this.playVoiceWithDucking(pick, 900);
+        }
+    }
+
+    playWin() {
+        if (!appPrefs.soundEnabled) return;
+        this.defaultWin.currentTime = 0;
+        this.playVoiceWithDucking(this.defaultWin, 1500);
+    }
+}
+
+const sound = new SoundManager();
 
 function applyLanguage(lang) {
     appPrefs.lang = lang;
@@ -257,56 +425,7 @@ function applyLanguage(lang) {
     updateHomeUI();
 }
 
-// --- نظام الصوتيات ---
-class SoundManager {
-    constructor() {
-        this.defaultCorrect = [
-            new Audio('assets/sounds/correct1.wav'),
-            new Audio('assets/sounds/correct2.wav'),
-            new Audio('assets/sounds/correct3.wav')
-        ];
-        this.defaultWrong = [
-            new Audio('assets/sounds/wrong1.wav'),
-            new Audio('assets/sounds/wrong2.wav')
-        ];
-        this.defaultWin = new Audio('assets/sounds/win.wav');
-    }
-    playCorrect() {
-        if (!appPrefs.soundEnabled) return;
-        const prof = getActiveProfile();
-        const custom = Object.values(prof.correctSounds || {}).filter(Boolean);
-        if (custom.length > 0) {
-            const pick = custom[Math.floor(Math.random() * custom.length)];
-            new Audio(pick.data).play().catch(() => {});
-        } else {
-            const pick = this.defaultCorrect[Math.floor(Math.random() * this.defaultCorrect.length)];
-            pick.currentTime = 0;
-            pick.play().catch(() => {});
-        }
-    }
-    playWrong() {
-        if (!appPrefs.soundEnabled) return;
-        const prof = getActiveProfile();
-        const custom = Object.values(prof.wrongSounds || {}).filter(Boolean);
-        if (custom.length > 0) {
-            const pick = custom[Math.floor(Math.random() * custom.length)];
-            new Audio(pick.data).play().catch(() => {});
-        } else {
-            const pick = this.defaultWrong[Math.floor(Math.random() * this.defaultWrong.length)];
-            pick.currentTime = 0;
-            pick.play().catch(() => {});
-        }
-    }
-    playWin() {
-        if (!appPrefs.soundEnabled) return;
-        this.defaultWin.currentTime = 0;
-        this.defaultWin.play().catch(() => {});
-    }
-}
-
-const sound = new SoundManager();
-
-// --- مطر الاحتفال الملون (Confetti) عند الفوز ---
+// --- مطر الاحتفال الملون (Confetti) ---
 function launchConfetti() {
     const canvas = document.getElementById('confetti-canvas');
     if (!canvas) return;
@@ -331,9 +450,7 @@ function launchConfetti() {
         frame++;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         pieces.forEach(p => {
-            p.x += p.vx;
-            p.y += p.vy;
-            p.rot += p.vRot;
+            p.x += p.vx; p.y += p.vy; p.rot += p.vRot;
             ctx.save();
             ctx.translate(p.x, p.y);
             ctx.rotate((p.rot * Math.PI) / 180);
@@ -347,8 +464,8 @@ function launchConfetti() {
     requestAnimationFrame(tick);
 }
 
-// --- إدارة الشاشات وزر الرجوع الفعلي للموبايل (خطوة للوراء + سؤال قبل الخروج) ---
-let currentScreen = 'home'; // 'home' | 'levels' | 'trophies' | 'game'
+// --- إدارة الشاشات وزر الرجوع ---
+let currentScreen = 'home';
 
 function navigateToScreen(screenName) {
     currentScreen = screenName;
@@ -382,36 +499,29 @@ function navigateToScreen(screenName) {
         topLogo.style.display = 'none';
         backBtn.textContent = '🏠';
     }
+
+    sound.updateBgmState();
 }
 
-// الدالة التي يستدعيها نظام الأندرويد الأصلي عند ضغط زر الرجوع في الموبايل
 window.onHardwareBackPress = function() {
-    // 1. إذا كانت نافذة تأكيد الخروج مفتوحة بالفعل وضغط رجوع، أغلقها وابق في اللعبة
     const exitModal = document.getElementById('exit-confirm-modal');
     if (exitModal.classList.contains('active')) {
         exitModal.classList.remove('active');
         return 'STAY';
     }
-
-    // 2. إذا كانت أي نافذة منبثقة أخرى مفتوحة (إعدادات، عجلة حظ، بروفايل)، أغلقها فقط
     const anyModal = document.querySelector('.modal.active');
     if (anyModal) {
         anyModal.classList.remove('active');
         return 'STAY';
     }
-
-    // 3. إذا كان اللاعب داخل المرحلة أو خريطة المستويات أو الكؤوس، يرجع خطوة إلى الشاشة الرئيسية (Home)
     if (currentScreen !== 'home') {
         navigateToScreen('home');
         return 'STAY';
     }
-
-    // 4. إذا كان في الشاشة الرئيسية، افتح نافذة السؤال: "هل تريد الخروج من MawMaw؟"
     exitModal.classList.add('active');
     return 'STAY';
 };
 
-// دعم History API للمتصفح العادي أيضاً
 history.pushState({ page: 'mawmaw' }, '');
 window.addEventListener('popstate', () => {
     window.onHardwareBackPress();
@@ -419,11 +529,8 @@ window.addEventListener('popstate', () => {
 });
 
 document.getElementById('nav-back-btn').addEventListener('click', () => {
-    if (currentScreen !== 'home') {
-        navigateToScreen('home');
-    } else {
-        openProfilePickerModal();
-    }
+    if (currentScreen !== 'home') navigateToScreen('home');
+    else openProfilePickerModal();
 });
 
 document.getElementById('stay-in-game-btn').addEventListener('click', () => {
@@ -431,7 +538,6 @@ document.getElementById('stay-in-game-btn').addEventListener('click', () => {
 });
 
 document.getElementById('confirm-exit-btn').addEventListener('click', () => {
-    // إغلاق التطبيق عبر Capacitor أو استدعاء الواجهة الأصلية
     if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
         window.Capacitor.Plugins.App.exitApp();
     } else if (navigator.app && navigator.app.exitApp) {
@@ -441,16 +547,26 @@ document.getElementById('confirm-exit-btn').addEventListener('click', () => {
     }
 });
 
-// --- تحديث الشاشة الرئيسية ---
+// --- تحديث واجهة الشاشة الرئيسية ---
 function updateHomeUI() {
     const prof = getActiveProfile();
     if (!prof) return;
+    const dict = I18N[appPrefs.lang];
+
     document.getElementById('home-profile-img').src = prof.photo;
     document.getElementById('home-profile-name').textContent = prof.name;
     document.getElementById('home-unlocked-val').textContent = `${prof.unlockedLevel} / ${TOTAL_LEVELS}`;
     document.getElementById('home-score-val').textContent = prof.score || 0;
-    document.getElementById('play-btn-lvl').textContent = prof.unlockedLevel;
+
+    // إذا كان هناك مستوى محفوظ قيد اللعب، اعرض رقمه واستكماله
+    const targetLvl = (prof.savedGame && prof.savedGame.level) ? prof.savedGame.level : prof.unlockedLevel;
+    document.getElementById('play-btn-lvl').textContent = targetLvl;
+    document.getElementById('play-now-label').textContent = (prof.savedGame && prof.savedGame.level) ? dict.continuePlay : dict.playNow;
+
     document.getElementById('booster-cat-img').src = prof.photo;
+
+    const spinInfo = getProfileSpinInfo(prof);
+    document.getElementById('home-wheel-badge').textContent = spinInfo.totalSpins;
 }
 
 // --- توليد ألغاز MawMaw (120 مستوى) ---
@@ -549,34 +665,57 @@ function generateRegionsPuzzle(levelNum) {
     return { N, catCols, colorGrid };
 }
 
-// --- حالة اللعب ---
+// --- 1. حفظ واسترجاع خطوات المستوى تلقائياً ---
 let game = {
     level: 1,
     N: 9,
     catCols: [],
     colorGrid: [],
-    boardState: [], // 0 = empty, 1 = X, 2 = Character
+    boardState: [],
     lives: 3
 };
 
 const boardEl = document.getElementById('regions-board');
 const gemsBar = document.getElementById('region-gems-bar');
 
-function startLevel(lvl) {
+function saveCurrentLevelProgress() {
     const prof = getActiveProfile();
-    // التحقق من أن المستوى مفتوح لهذا البروفايل
+    prof.savedGame = {
+        level: game.level,
+        boardState: game.boardState.map(row => [...row]),
+        lives: game.lives
+    };
+    saveProfilesToDB();
+}
+
+function clearSavedLevelProgress() {
+    const prof = getActiveProfile();
+    prof.savedGame = null;
+    saveProfilesToDB();
+}
+
+function startLevel(lvl, forceFresh = false) {
+    const prof = getActiveProfile();
     if (lvl > prof.unlockedLevel) return;
 
     game.level = lvl;
     prof.currentLevel = lvl;
-    saveProfilesToDB();
 
     const puzzle = generateRegionsPuzzle(lvl);
     game.N = puzzle.N;
     game.catCols = puzzle.catCols;
     game.colorGrid = puzzle.colorGrid;
-    game.boardState = Array.from({ length: game.N }, () => new Array(game.N).fill(0));
-    game.lives = 3;
+
+    // استرجاع اللوحة المحفوظة إذا كان اللاعب قد بدأ هذا المستوى ولم ينهه بعد
+    if (!forceFresh && prof.savedGame && prof.savedGame.level === lvl &&
+        Array.isArray(prof.savedGame.boardState) && prof.savedGame.boardState.length === game.N) {
+        game.boardState = prof.savedGame.boardState.map(row => [...row]);
+        game.lives = prof.savedGame.lives || 3;
+    } else {
+        game.boardState = Array.from({ length: game.N }, () => new Array(game.N).fill(0));
+        game.lives = 3;
+        saveCurrentLevelProgress();
+    }
 
     document.getElementById('level-num-display').textContent = lvl;
     document.getElementById('score-display').textContent = prof.score || 0;
@@ -588,6 +727,10 @@ function startLevel(lvl) {
     renderBoard();
     navigateToScreen('game');
 }
+
+document.getElementById('restart-lvl-btn').addEventListener('click', () => {
+    startLevel(game.level, true);
+});
 
 function renderGemsBar() {
     gemsBar.innerHTML = '';
@@ -626,7 +769,7 @@ function updateBoostersUI() {
     document.getElementById('badge-mouse').textContent = prof.boosters.mouse;
 }
 
-// --- نظام الضغطة الواحدة (X / إلغاء X) والضغطتين السريعتين (وضع الشخصية) ---
+// --- 3. نظام الضغط وعلامة X المتوهجة بحجم 75% مع الصوت الخفيف ---
 let tapTimer = null;
 let lastTappedCoords = null;
 let lastTapTime = 0;
@@ -656,18 +799,22 @@ function toggleSingleTapX(r, c) {
     const cur = game.boardState[r][c];
     const tileEl = boardEl.querySelector(`.tile[data-r="${r}"][data-c="${c}"]`);
 
+    sound.playXTap();
+
     if (cur === 0) {
         game.boardState[r][c] = 1;
-        if (tileEl) tileEl.innerHTML = `<span class="tile-x">✕</span>`;
+        if (tileEl) tileEl.innerHTML = getGlowingXSvg();
+        saveCurrentLevelProgress();
     } else if (cur === 1) {
         game.boardState[r][c] = 0;
-        const xEl = tileEl ? tileEl.querySelector('.tile-x') : null;
+        const xEl = tileEl ? tileEl.querySelector('.tile-x-svg') : null;
         if (xEl) {
             xEl.classList.add('removing');
-            setTimeout(() => { if (game.boardState[r][c] === 0) tileEl.innerHTML = ''; }, 165);
+            setTimeout(() => { if (game.boardState[r][c] === 0) tileEl.innerHTML = ''; }, 160);
         } else if (tileEl) {
             tileEl.innerHTML = '';
         }
+        saveCurrentLevelProgress();
     } else if (cur === 2) {
         game.boardState[r][c] = 0;
         const imgEl = tileEl ? tileEl.querySelector('.tile-avatar') : null;
@@ -676,8 +823,9 @@ function toggleSingleTapX(r, c) {
             setTimeout(() => {
                 if (game.boardState[r][c] === 0) tileEl.innerHTML = '';
                 updateGemsStatus();
-            }, 165);
+            }, 160);
         }
+        saveCurrentLevelProgress();
     }
 }
 
@@ -732,7 +880,7 @@ function renderBoard() {
 
             const state = game.boardState[r][c];
             if (state === 1) {
-                tile.innerHTML = `<span class="tile-x">✕</span>`;
+                tile.innerHTML = getGlowingXSvg();
             } else if (state === 2) {
                 const img = document.createElement('img');
                 img.src = prof.photo;
@@ -771,7 +919,7 @@ function autoFillXsAround(r, c) {
             if (rr === r || cc === c || game.colorGrid[rr][cc] === myColor || (Math.abs(rr - r) <= 1 && Math.abs(cc - c) <= 1)) {
                 game.boardState[rr][cc] = 1;
                 const tEl = boardEl.querySelector(`.tile[data-r="${rr}"][data-c="${cc}"]`);
-                if (tEl) tEl.innerHTML = `<span class="tile-x">✕</span>`;
+                if (tEl) tEl.innerHTML = getGlowingXSvg();
             }
         }
     }
@@ -781,16 +929,20 @@ function placeCharacterAt(r, c) {
     const tileEl = boardEl.querySelector(`.tile[data-r="${r}"][data-c="${c}"]`);
     if (hasRuleViolation(r, c)) {
         game.boardState[r][c] = 1;
-        if (tileEl) tileEl.innerHTML = `<span class="tile-x">✕</span>`;
+        if (tileEl) tileEl.innerHTML = getGlowingXSvg();
         sound.playWrong();
         spawnWrongAnimation(tileEl);
 
         game.lives--;
         renderLivesUI();
+
         if (game.lives <= 0) {
+            clearSavedLevelProgress();
             setTimeout(() => {
                 document.getElementById('lose-modal').classList.add('active');
             }, 600);
+        } else {
+            saveCurrentLevelProgress();
         }
         return;
     }
@@ -812,7 +964,7 @@ function placeCharacterAt(r, c) {
 
     prof.score = (prof.score || 0) + 10;
     document.getElementById('score-display').textContent = prof.score;
-    saveProfilesToDB();
+    saveCurrentLevelProgress();
 
     updateGemsStatus();
     checkVictory();
@@ -829,13 +981,16 @@ function checkVictory() {
         prof.stars[game.level] = Math.max(prof.stars[game.level] || 0, earnedStars);
         prof.score = (prof.score || 0) + 50;
 
-        // فتح المستوى التالي لهذا البروفايل إذا أنهى أعلى مستوى مفتوح لديه!
         if (game.level === prof.unlockedLevel && prof.unlockedLevel < TOTAL_LEVELS) {
             prof.unlockedLevel++;
         }
         if (game.level < TOTAL_LEVELS) {
             prof.currentLevel = game.level + 1;
         }
+
+        // مسح اللوحة المحفوظة لأن المستوى اكتمل بنجاح، وفحص ما إذا فتح كأساً جديداً!
+        prof.savedGame = null;
+        checkAndGrantNewTrophies(prof);
         saveProfilesToDB();
 
         launchConfetti();
@@ -849,7 +1004,7 @@ function checkVictory() {
     }
 }
 
-// --- المساعدات الثلاث (العصا السحرية، البوصلة، البرق) ---
+// --- المساعدات الثلاث ---
 document.getElementById('booster-wand').addEventListener('click', () => {
     const prof = getActiveProfile();
     if (prof.boosters.cat <= 0) return;
@@ -897,16 +1052,17 @@ document.getElementById('booster-zap').addEventListener('click', () => {
     if (!wrongEmpty.length) return;
     prof.boosters.mouse--;
     updateBoostersUI();
-    saveProfilesToDB();
     wrongEmpty.sort(() => Math.random() - 0.5);
     wrongEmpty.slice(0, 5).forEach(([r, c]) => {
         game.boardState[r][c] = 1;
         const tEl = boardEl.querySelector(`.tile[data-r="${r}"][data-c="${c}"]`);
-        if (tEl) tEl.innerHTML = `<span class="tile-x">✕</span>`;
+        if (tEl) tEl.innerHTML = getGlowingXSvg();
     });
+    sound.playXTap();
+    saveCurrentLevelProgress();
 });
 
-// --- خريطة المستويات (المستويات مقفولة وتفتح تدريجياً لكل بروفايل) ---
+// --- خريطة المستويات وغرفة الكؤوس ---
 function renderLevelsGrid() {
     const prof = getActiveProfile();
     const grid = document.getElementById('levels-grid');
@@ -916,14 +1072,15 @@ function renderLevelsGrid() {
         const btn = document.createElement('button');
         const isUnlocked = i <= prof.unlockedLevel;
         const stars = (prof.stars && prof.stars[i]) || 0;
+        const hasSaved = prof.savedGame && prof.savedGame.level === i;
 
         btn.className = `lvl-btn ${!isUnlocked ? 'locked' : stars > 0 ? 'completed' : ''} ${i === prof.unlockedLevel ? 'current' : ''}`;
         if (isUnlocked) {
             btn.innerHTML = `
-                <div style="font-size:1.05rem;">${i}</div>
+                <div style="font-size:1.05rem;">${i} ${hasSaved ? '⏳' : ''}</div>
                 <div style="font-size:0.65rem;">${stars > 0 ? '⭐'.repeat(stars) : `${getGridSizeForLevel(i)}×${getGridSizeForLevel(i)}`}</div>
             `;
-            btn.addEventListener('click', () => startLevel(i));
+            btn.addEventListener('click', () => startLevel(i, false));
         } else {
             btn.innerHTML = `
                 <div style="font-size:1rem;">🔒</div>
@@ -934,7 +1091,6 @@ function renderLevelsGrid() {
     }
 }
 
-// --- غرفة الكؤوس والأوسمة (Trophies Room) ---
 function renderTrophiesGrid() {
     const prof = getActiveProfile();
     const grid = document.getElementById('trophies-grid');
@@ -955,48 +1111,100 @@ function renderTrophiesGrid() {
     });
 }
 
-// --- عجلة الهدايا المبهجة (Lucky Wheel) ---
+// --- 2. عجلة الحظ الدقيقة 100% + نظام مرة أسبوعياً ومرة لكل كأس ---
 let wheelSpinning = false;
 let wheelDeg = 0;
 
+// تعريف الـ 6 خانات بنفس ترتيب الـ conic-gradient والـ wheel-label في HTML بالضبط:
+// Slice 0 (center 30deg):  🪄 +2
+// Slice 1 (center 90deg):  🧭 +3
+// Slice 2 (center 150deg): ⚡ +2
+// Slice 3 (center 210deg): ⭐ +100
+// Slice 4 (center 270deg): 🎁 +1 الكل
+// Slice 5 (center 330deg): 🪄 +3
+const WHEEL_SLICES = [
+    { index: 0, centerDeg: 30,  ar: '🎉 ربحت +2 عصا سحرية 🪄!', en: '🎉 Won +2 Magic Wands 🪄!', apply: p => p.boosters.cat += 2 },
+    { index: 1, centerDeg: 90,  ar: '🎉 ربحت +3 بوصلة ذكية 🧭!', en: '🎉 Won +3 Smart Compasses 🧭!', apply: p => p.boosters.hint += 3 },
+    { index: 2, centerDeg: 150, ar: '🎉 ربحت +2 برق كاشف ⚡!', en: '🎉 Won +2 Lightning Zaps ⚡!', apply: p => p.boosters.mouse += 2 },
+    { index: 3, centerDeg: 210, ar: '🎉 ربحت +100 نقطة ذهبية ⭐!', en: '🎉 Won +100 Bonus Score ⭐!', apply: p => p.score = (p.score || 0) + 100 },
+    { index: 4, centerDeg: 270, ar: '🎁 جائزة كبرى! +1 لكل المساعدات!', en: '🎁 Jackpot! +1 of ALL Power-ups!', apply: p => { p.boosters.cat++; p.boosters.hint++; p.boosters.mouse++; } },
+    { index: 5, centerDeg: 330, ar: '🎉 ربحت +3 عصا سحرية 🪄!', en: '🎉 Won +3 Magic Wands 🪄!', apply: p => p.boosters.cat += 3 }
+];
+
+function updateWheelModalUI() {
+    const prof = getActiveProfile();
+    const info = getProfileSpinInfo(prof);
+    const dict = I18N[appPrefs.lang];
+
+    document.getElementById('wheel-spins-count').textContent = info.totalSpins;
+    const spinBtn = document.getElementById('spin-wheel-btn');
+    const subText = document.getElementById('wheel-cooldown-text');
+
+    if (info.totalSpins > 0) {
+        spinBtn.disabled = false;
+        spinBtn.textContent = dict.spinNowBtn;
+        subText.textContent = info.hasWeekly
+            ? (appPrefs.lang === 'ar' ? '✨ لفتك الأسبوعية المجانية جاهزة الآن!' : '✨ Your Weekly Free Spin is ready!')
+            : (appPrefs.lang === 'ar' ? `🏆 لديك ${prof.bonusSpins} لفة هدية من الكؤوس!` : `🏆 You have ${prof.bonusSpins} Trophy Bonus Spins!`);
+    } else {
+        spinBtn.disabled = true;
+        spinBtn.textContent = dict.noSpinsBtn;
+        subText.textContent = formatRemainingCooldown(info.remainingMs);
+    }
+    updateHomeUI();
+}
+
 document.getElementById('open-wheel-btn').addEventListener('click', () => {
     document.getElementById('wheel-prize-msg').textContent = '';
+    updateWheelModalUI();
     document.getElementById('wheel-modal').classList.add('active');
 });
+
 document.getElementById('close-wheel-btn').addEventListener('click', () => {
-    document.getElementById('wheel-modal').classList.remove('active');
+    if (!wheelSpinning) document.getElementById('wheel-modal').classList.remove('active');
 });
 
-document.getElementById('spin-wheel-btn').addEventListener('click', () => {
+document.getElementById('spin-wheel-btn').addEventListener('click', async () => {
     if (wheelSpinning) return;
+    const prof = getActiveProfile();
+    const info = getProfileSpinInfo(prof);
+    if (info.totalSpins <= 0) return;
+
     wheelSpinning = true;
+    document.getElementById('spin-wheel-btn').disabled = true;
     document.getElementById('wheel-prize-msg').textContent = '...';
 
-    const prizes = [
-        { labelAr: '🎉 ربحت +2 عصا سحرية 🪄!', labelEn: '🎉 Won +2 Magic Wands 🪄!', apply: p => p.boosters.cat += 2 },
-        { labelAr: '🎉 ربحت +3 بوصلة ذكية 🧭!', labelEn: '🎉 Won +3 Smart Compasses 🧭!', apply: p => p.boosters.hint += 3 },
-        { labelAr: '🎉 ربحت +2 برق كاشف ⚡!', labelEn: '🎉 Won +2 Lightning Zaps ⚡!', apply: p => p.boosters.mouse += 2 },
-        { labelAr: '🎉 ربحت +100 نقطة ذهبية ⭐!', labelEn: '🎉 Won +100 Bonus Score ⭐!', apply: p => p.score = (p.score || 0) + 100 },
-        { labelAr: '🎁 جائزة كبرى! +1 من كل المساعدات!', labelEn: '🎁 Jackpot! +1 of ALL Power-ups!', apply: p => { p.boosters.cat++; p.boosters.hint++; p.boosters.mouse++; } }
-    ];
+    // خصم اللفة (الأولوية للفة الأسبوعية ثم لفات الكؤوس)
+    if (info.hasWeekly) {
+        prof.lastWeeklySpin = Date.now();
+    } else {
+        prof.bonusSpins = Math.max(0, (prof.bonusSpins || 0) - 1);
+    }
+    await saveProfilesToDB();
 
-    const pick = prizes[Math.floor(Math.random() * prizes.length)];
-    wheelDeg += 1440 + Math.floor(Math.random() * 360);
+    // اختيار الجائزة وحساب الزاوية الهندسية الدقيقة ليقف المؤشر العلوي (0deg) في منتصف الخانة تماماً!
+    const chosenSlice = WHEEL_SLICES[Math.floor(Math.random() * WHEEL_SLICES.length)];
+    const targetMod = (360 - chosenSlice.centerDeg) % 360;
+    const currentMod = ((wheelDeg % 360) + 360) % 360;
+    let delta = targetMod - currentMod;
+    if (delta <= 0) delta += 360;
+
+    // 5 لفات كاملة (1800 درجة) + الزاوية الدقيقة للخانة المختارة
+    wheelDeg += 1800 + delta;
     document.getElementById('lucky-wheel-disc').style.transform = `rotate(${wheelDeg}deg)`;
 
     setTimeout(async () => {
-        const prof = getActiveProfile();
-        pick.apply(prof);
+        chosenSlice.apply(prof);
         await saveProfilesToDB();
-        updateHomeUI();
         sound.playWin();
         launchConfetti();
-        document.getElementById('wheel-prize-msg').textContent = appPrefs.lang === 'ar' ? pick.labelAr : pick.labelEn;
+        document.getElementById('wheel-prize-msg').textContent = appPrefs.lang === 'ar' ? chosenSlice.ar : chosenSlice.en;
         wheelSpinning = false;
-    }, 3250);
+        updateWheelModalUI();
+    }, 3450);
 });
 
-// --- الطريقة السرية للـ Cheats (5 ضغطات سريعة على لوجو MawMaw أو عنوان الإعدادات) ---
+// --- لوحة الأسرار (Secret Cheats) ---
 let secretTapCount = 0;
 let secretTapTimer = null;
 
@@ -1012,6 +1220,7 @@ function handleSecretTriggerTap() {
 }
 
 document.getElementById('top-logo-wrap').addEventListener('click', handleSecretTriggerTap);
+document.getElementById('home-logo-secret').addEventListener('click', handleSecretTriggerTap);
 document.getElementById('settings-secret-trigger').addEventListener('click', handleSecretTriggerTap);
 
 function openSecretCheatModal() {
@@ -1028,6 +1237,7 @@ document.getElementById('close-cheat-btn').addEventListener('click', () => {
 document.getElementById('cheat-unlock-all-btn').addEventListener('click', async () => {
     const prof = getActiveProfile();
     prof.unlockedLevel = TOTAL_LEVELS;
+    checkAndGrantNewTrophies(prof);
     await saveProfilesToDB();
     updateHomeUI();
     if (currentScreen === 'levels') renderLevelsGrid();
@@ -1047,10 +1257,20 @@ document.getElementById('cheat-add-boosters-btn').addEventListener('click', asyn
     document.getElementById('cheat-status-msg').textContent = '✅ تمت إضافة +50 لكل المساعدات!';
 });
 
+document.getElementById('cheat-add-spins-btn').addEventListener('click', async () => {
+    const prof = getActiveProfile();
+    prof.bonusSpins = (prof.bonusSpins || 0) + 10;
+    await saveProfilesToDB();
+    updateHomeUI();
+    sound.playCorrect();
+    document.getElementById('cheat-status-msg').textContent = '✅ تمت إضافة +10 لفات لعجلة الحظ!';
+});
+
 document.getElementById('cheat-add-score-btn').addEventListener('click', async () => {
     const prof = getActiveProfile();
     prof.score = (prof.score || 0) + 1000;
     prof.unlockedLevel = TOTAL_LEVELS;
+    checkAndGrantNewTrophies(prof);
     await saveProfilesToDB();
     updateHomeUI();
     sound.playWin();
@@ -1064,31 +1284,39 @@ document.getElementById('cheat-jump-btn').addEventListener('click', async () => 
     if (val > prof.unlockedLevel) prof.unlockedLevel = val;
     await saveProfilesToDB();
     document.getElementById('cheat-modal').classList.remove('active');
-    startLevel(val);
+    startLevel(val, true);
 });
 
-// --- أزرار التنقل في الشاشة الرئيسية ---
+// --- أزرار الشاشة الرئيسية ---
 document.getElementById('play-now-btn').addEventListener('click', () => {
     const prof = getActiveProfile();
-    startLevel(prof.unlockedLevel || 1);
+    const targetLvl = (prof.savedGame && prof.savedGame.level) ? prof.savedGame.level : (prof.unlockedLevel || 1);
+    startLevel(targetLvl, false);
 });
 document.getElementById('open-levels-btn').addEventListener('click', () => navigateToScreen('levels'));
 document.getElementById('open-trophies-btn').addEventListener('click', () => navigateToScreen('trophies'));
 document.getElementById('open-settings-home-btn').addEventListener('click', () => openSettingsModal());
 document.getElementById('quick-swap-btn').addEventListener('click', () => openProfilePickerModal());
 
+document.getElementById('bgm-quick-btn').addEventListener('click', () => {
+    appPrefs.bgmEnabled = !appPrefs.bgmEnabled;
+    localStorage.setItem('mawmaw_bgm', appPrefs.bgmEnabled);
+    document.getElementById('bgm-toggle').checked = appPrefs.bgmEnabled;
+    sound.updateBgmState();
+});
+
 document.getElementById('next-level-btn').addEventListener('click', () => {
     document.getElementById('win-modal').classList.remove('active');
     const nextLvl = game.level < TOTAL_LEVELS ? game.level + 1 : 1;
-    startLevel(nextLvl);
+    startLevel(nextLvl, true);
 });
 
 document.getElementById('retry-level-btn').addEventListener('click', () => {
     document.getElementById('lose-modal').classList.remove('active');
-    startLevel(game.level);
+    startLevel(game.level, true);
 });
 
-// --- نافذة اختيار البروفايل عند الفتح ---
+// --- نافذة اختيار البروفايل ---
 function openProfilePickerModal() {
     const grid = document.getElementById('startup-profiles-grid');
     grid.innerHTML = '';
@@ -1105,7 +1333,10 @@ function openProfilePickerModal() {
             appPrefs.activeProfileId = p.id;
             saveProfilesToDB();
             updateHomeUI();
-            if (currentScreen === 'game') startLevel(p.unlockedLevel || 1);
+            if (currentScreen === 'game') {
+                const targetLvl = (p.savedGame && p.savedGame.level) ? p.savedGame.level : (p.unlockedLevel || 1);
+                startLevel(targetLvl, false);
+            }
             if (currentScreen === 'levels') renderLevelsGrid();
             if (currentScreen === 'trophies') renderTrophiesGrid();
             document.getElementById('profile-picker-modal').classList.remove('active');
@@ -1156,10 +1387,14 @@ document.getElementById('save-new-profile-btn').addEventListener('click', async 
         correctSounds: {},
         wrongSounds: {},
         currentLevel: 1,
-        unlockedLevel: 1, // يبدأ من المستوى 1 فقط والباقي مقفول
+        unlockedLevel: 1,
         stars: {},
         score: 0,
-        boosters: { cat: 7, hint: 9, mouse: 2 }
+        boosters: { cat: 7, hint: 9, mouse: 2 },
+        savedGame: null,
+        lastWeeklySpin: 0,
+        bonusSpins: 0,
+        unlockedTrophies: { t1: true }
     };
     profiles.push(newProf);
     appPrefs.activeProfileId = newProf.id;
@@ -1255,7 +1490,10 @@ function renderAudioSlotsUI(containerId, soundMap, labelText) {
             const playB = document.createElement('button');
             playB.className = 'mini-btn play';
             playB.textContent = '▶️';
-            playB.onclick = () => new Audio(entry.data).play();
+            playB.onclick = () => {
+                const a = new Audio(entry.data);
+                sound.playVoiceWithDucking(a, 3000);
+            };
 
             const delB = document.createElement('button');
             delB.className = 'mini-btn del';
@@ -1329,8 +1567,13 @@ document.getElementById('sound-toggle').addEventListener('change', (e) => {
     appPrefs.soundEnabled = e.target.checked;
     localStorage.setItem('mawmaw_sound', appPrefs.soundEnabled);
 });
+document.getElementById('bgm-toggle').addEventListener('change', (e) => {
+    appPrefs.bgmEnabled = e.target.checked;
+    localStorage.setItem('mawmaw_bgm', appPrefs.bgmEnabled);
+    sound.updateBgmState();
+});
 
-// --- تهيئة اللعبة عند الفتح ---
+// --- تهيئة اللعبة ---
 async function initApp() {
     await db.init();
     const savedProfs = await db.get('profiles_list');
@@ -1343,11 +1586,12 @@ async function initApp() {
 
     document.getElementById('auto-x-toggle').checked = appPrefs.autoX;
     document.getElementById('sound-toggle').checked = appPrefs.soundEnabled;
+    document.getElementById('bgm-toggle').checked = appPrefs.bgmEnabled;
+    sound.updateBgmState();
 
     applyLanguage(appPrefs.lang);
     navigateToScreen('home');
 
-    // إذا كان هناك بروفايلات أطفال مضافة، اطلب اختيار البروفايل فور فتح اللعبة
     if (profiles.length > 1) {
         openProfilePickerModal();
     }
